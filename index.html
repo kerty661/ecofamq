@@ -1734,6 +1734,9 @@ async function checkAccess(user) {
     currentUser = user;
     currentRole = null;
 
+    // Загружаем публичные данные для всех посетителей
+    await loadData();
+
     if (!user) {
         if (adminLogin) adminLogin.hidden = false;
         if (adminContent) adminContent.hidden = true;
@@ -1772,7 +1775,6 @@ async function checkAccess(user) {
     }
 
     showMessage(loginMessage, '');
-    await loadData();
 }
 
 
