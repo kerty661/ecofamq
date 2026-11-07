@@ -1284,68 +1284,85 @@ footer {
         </button>
     </div>
 
-    <div class="admin-panel" id="adminPanel">
+    
+<div class="admin-panel" id="adminPanel">
 
-        <p class="admin-note">
-            Локальная панель редактирования. Изменения хранятся
-            в браузере этого устройства и не синхронизируются
-            с другими посетителями. Не вводи сюда секретные данные.
+    <div id="adminLogin">
+        <h3>ВХОД В ECO FAMQ</h3>
+
+        <form class="admin-form" id="loginForm">
+            <input
+                type="email"
+                name="email"
+                placeholder="Email администратора"
+                required
+            >
+
+            <input
+                type="password"
+                name="password"
+                placeholder="Пароль"
+                required
+            >
+
+            <button type="submit">ВОЙТИ</button>
+        </form>
+
+        <p id="loginMessage" class="admin-note">
+            Войди под своим аккаунтом администратора.
         </p>
+    </div>
+
+    <div id="adminContent" hidden>
+
+        <p class="admin-note" id="adminWelcome">
+            Ты вошёл в панель управления ECO FAMQ.
+        </p>
+
+        <button type="button" id="logoutButton">
+            ВЫЙТИ ИЗ АККАУНТА
+        </button>
 
         <h3>ДОБАВИТЬ УЧАСТНИКА</h3>
 
         <form class="admin-form" id="memberForm">
-
             <input name="name" placeholder="Игровой ник" required maxlength="35">
-
             <input name="role" placeholder="Должность / ранг" required maxlength="40">
-
-            <input name="wins" type="number" min="0" max="9999"
-                   placeholder="Количество побед" value="0">
-
-            <input name="avatar" type="url"
-                   placeholder="Ссылка на аватарку (необязательно)">
-
+            <input name="wins" type="number" min="0" max="9999" placeholder="Количество побед" value="0">
+            <input name="avatar" type="url" placeholder="Ссылка на аватарку (необязательно)">
             <button type="submit">ДОБАВИТЬ УЧАСТНИКА</button>
-
         </form>
 
         <h3>УЧАСТНИКИ</h3>
         <div class="admin-list" id="adminMembers"></div>
 
-
         <h3>ДОБАВИТЬ НОВОСТЬ</h3>
 
         <form class="admin-form" id="newsForm">
-
             <input name="title" placeholder="Заголовок новости" required maxlength="80">
-
             <textarea name="text" placeholder="Текст новости" required maxlength="1000"></textarea>
-
             <button type="submit">ОПУБЛИКОВАТЬ НОВОСТЬ</button>
-
         </form>
 
         <h3>УПРАВЛЕНИЕ НОВОСТЯМИ</h3>
         <div class="admin-list" id="adminNews"></div>
 
-
         <h3>ДОБАВИТЬ ФОТО В ГАЛЕРЕЮ</h3>
 
         <form class="admin-form" id="galleryForm">
-
             <input name="url" type="url" placeholder="Прямая ссылка на изображение" required>
-
             <input name="caption" placeholder="Подпись к фотографии" required maxlength="80">
-
             <button type="submit">ДОБАВИТЬ ФОТО</button>
-
         </form>
 
         <h3>ФОТОГРАФИИ ГАЛЕРЕИ</h3>
         <div class="admin-list" id="adminGallery"></div>
 
     </div>
+</div>
+</section>
+</div>
+
 
 </section>
 
@@ -1383,16 +1400,32 @@ footer {
 
 <script>
 
+/* SUPABASE CONFIG */
+
+const SUPABASE_URL = 'https://mdazrcskzwupolkzmnkv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_LFrfTFCATa88qEiu3PSPWg_dFu-q7TV';
+
+let db = null;
+let currentUser = null;
+let currentRole = null;
+
+let data = {
+    members: [],
+    news: [],
+    gallery: []
+};
+
+
 /* LOADER */
 
 window.addEventListener('load', () => {
-    setTimeout(() => {
-        document.getElementById('loader').classList.add('hide');
-    }, 700);
+    const loader = document.getElementById('loader');
+    if (loader) setTimeout(() => loader.classList.add('hide'), 700);
 });
 
 setTimeout(() => {
-    document.getElementById('loader').classList.add('hide');
+    const loader = document.getElementById('loader');
+    if (loader) loader.classList.add('hide');
 }, 4000);
 
 
@@ -1401,17 +1434,19 @@ setTimeout(() => {
 const menuToggle = document.getElementById('menuToggle');
 const navLinks = document.getElementById('navLinks');
 
-menuToggle.addEventListener('click', () => {
-    const opened = navLinks.classList.toggle('open');
-    menuToggle.setAttribute('aria-expanded', String(opened));
-});
-
-navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-        navLinks.classList.remove('open');
-        menuToggle.setAttribute('aria-expanded', 'false');
+if (menuToggle && navLinks) {
+    menuToggle.addEventListener('click', () => {
+        const opened = navLinks.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', String(opened));
     });
-});
+
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('open');
+            menuToggle.setAttribute('aria-expanded', 'false');
+        });
+    });
+}
 
 
 /* SCROLL ANIMATION */
@@ -1423,57 +1458,20 @@ const observer = new IntersectionObserver(entries => {
             observer.unobserve(entry.target);
         }
     });
-}, {threshold:0.1});
+}, { threshold: 0.1 });
 
 document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
 
 
-/* LOCAL DATA */
-
-const STORAGE_KEY = 'ecofamq_site_data_v1';
-
-const initialData = {
-    members: [],
-    news: [],
-    gallery: []
-};
-
-function loadData() {
-    try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-        if (!saved || typeof saved !== 'object') {
-            return structuredClone(initialData);
-        }
-
-        return {
-            members: Array.isArray(saved.members) ? saved.members : [],
-            news: Array.isArray(saved.news) ? saved.news : [],
-            gallery: Array.isArray(saved.gallery) ? saved.gallery : []
-        };
-    } catch {
-        return structuredClone(initialData);
-    }
-}
-
-let data = loadData();
-
-function saveData() {
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        renderAll();
-    } catch {
-        alert('Не удалось сохранить данные. Возможно, превышен лимит хранилища.');
-    }
-}
+/* HELPERS */
 
 function safeText(value) {
     return String(value ?? '').replace(/[&<>"']/g, char => ({
-        '&':'&amp;',
-        '<':'&lt;',
-        '>':'&gt;',
-        '"':'&quot;',
-        "'":'&#39;'
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
     })[char]);
 }
 
@@ -1486,12 +1484,26 @@ function validImageUrl(value) {
     }
 }
 
+function showMessage(element, message) {
+    if (element) element.textContent = message;
+}
 
-/* MEMBERS */
+function formatDate(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime())
+        ? ''
+        : date.toLocaleDateString('ru-RU');
+}
+
+
+/* RENDER MEMBERS */
 
 function renderMembers() {
     const grid = document.getElementById('membersGrid');
     const admin = document.getElementById('adminMembers');
+
+    if (!grid || !admin) return;
 
     grid.innerHTML = '';
     admin.innerHTML = '';
@@ -1499,10 +1511,9 @@ function renderMembers() {
     if (!data.members.length) {
         grid.innerHTML = '<div class="empty-state">СОСТАВ ПОКА НЕ ДОБАВЛЕН<br>Участники появятся здесь после добавления через админ-панель.</div>';
         admin.innerHTML = '<div class="empty-state">Участников пока нет.</div>';
-        return;
     }
 
-    data.members.forEach((member, index) => {
+    data.members.forEach(member => {
         const name = safeText(member.name);
         const role = safeText(member.role);
         const avatar = validImageUrl(member.avatar || '');
@@ -1515,7 +1526,7 @@ function renderMembers() {
             <div class="avatar">
                 ${avatar
                     ? `<img src="${safeText(avatar)}" alt="">`
-                    : safeText((member.name || '?').slice(0,2).toUpperCase())}
+                    : safeText((member.name || '?').slice(0, 2).toUpperCase())}
             </div>
             <div class="member-name">${name}</div>
             <div class="member-role">${role}</div>
@@ -1528,20 +1539,26 @@ function renderMembers() {
         row.className = 'admin-item';
         row.innerHTML = `
             <span>${name} — ${role}</span>
-            <button class="delete-btn" data-delete-member="${index}">УДАЛИТЬ</button>
+            <button class="delete-btn" data-delete-member="${safeText(member.id)}">УДАЛИТЬ</button>
         `;
         admin.appendChild(row);
     });
 
-    document.getElementById('statMembers').textContent = data.members.length;
+    const stat = document.getElementById('statMembers');
+    if (stat) stat.textContent = data.members.length;
 }
+
+
+/* RENDER LEADERBOARD */
 
 function renderLeaderboard() {
     const body = document.getElementById('leaderboard');
+    if (!body) return;
+
     body.innerHTML = '';
 
     const sorted = [...data.members].sort(
-        (a,b) => (Number(b.wins)||0) - (Number(a.wins)||0)
+        (a, b) => (Number(b.wins) || 0) - (Number(a.wins) || 0)
     );
 
     if (!sorted.length) {
@@ -1549,24 +1566,26 @@ function renderLeaderboard() {
         return;
     }
 
-    sorted.forEach((member,index) => {
+    sorted.forEach((member, index) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>#${index+1}</td>
+            <td>#${index + 1}</td>
             <td>${safeText(member.name)}</td>
             <td>${safeText(member.role)}</td>
-            <td>${Math.max(0,Number(member.wins)||0)}</td>
+            <td>${Math.max(0, Number(member.wins) || 0)}</td>
         `;
         body.appendChild(tr);
     });
 }
 
 
-/* NEWS */
+/* RENDER NEWS */
 
 function renderNews() {
     const list = document.getElementById('newsList');
     const admin = document.getElementById('adminNews');
+
+    if (!list || !admin) return;
 
     list.innerHTML = '';
     admin.innerHTML = '';
@@ -1576,13 +1595,13 @@ function renderNews() {
         admin.innerHTML = '<div class="empty-state">Новостей пока нет.</div>';
     }
 
-    data.news.forEach((item,index) => {
+    data.news.forEach(item => {
         const card = document.createElement('article');
         card.className = 'card news-card';
         card.innerHTML = `
-            <div class="news-date">${safeText(item.date)}</div>
+            <div class="news-date">${safeText(formatDate(item.created_at))}</div>
             <div class="news-title">${safeText(item.title)}</div>
-            <div class="news-text">${safeText(item.text)}</div>
+            <div class="news-text">${safeText(item.body)}</div>
         `;
         list.appendChild(card);
 
@@ -1590,27 +1609,29 @@ function renderNews() {
         row.className = 'admin-item';
         row.innerHTML = `
             <span>${safeText(item.title)}</span>
-            <button class="delete-btn" data-delete-news="${index}">УДАЛИТЬ</button>
+            <button class="delete-btn" data-delete-news="${safeText(item.id)}">УДАЛИТЬ</button>
         `;
         admin.appendChild(row);
     });
 
-    document.getElementById('statNews').textContent = data.news.length;
+    const stat = document.getElementById('statNews');
+    if (stat) stat.textContent = data.news.length;
 }
 
 
-/* GALLERY */
+/* RENDER GALLERY */
 
 function renderGallery() {
     const grid = document.getElementById('galleryGrid');
     const admin = document.getElementById('adminGallery');
 
+    if (!grid || !admin) return;
+
     grid.querySelectorAll('[data-custom-gallery]').forEach(el => el.remove());
     admin.innerHTML = '';
 
-    data.gallery.forEach((item,index) => {
-        const url = validImageUrl(item.url);
-
+    data.gallery.forEach(item => {
+        const url = validImageUrl(item.image_url);
         if (!url) return;
 
         const card = document.createElement('div');
@@ -1623,16 +1644,16 @@ function renderGallery() {
 
         const caption = document.createElement('div');
         caption.className = 'gallery-caption';
-        caption.textContent = item.caption;
+        caption.textContent = item.caption || '';
 
-        card.append(img,caption);
+        card.append(img, caption);
         grid.appendChild(card);
 
         const row = document.createElement('div');
         row.className = 'admin-item';
         row.innerHTML = `
             <span>${safeText(item.caption)}</span>
-            <button class="delete-btn" data-delete-gallery="${index}">УДАЛИТЬ</button>
+            <button class="delete-btn" data-delete-gallery="${safeText(item.id)}">УДАЛИТЬ</button>
         `;
         admin.appendChild(row);
     });
@@ -1643,7 +1664,7 @@ function renderGallery() {
 }
 
 
-/* STATISTICS */
+/* RENDER EVERYTHING */
 
 function renderAll() {
     renderMembers();
@@ -1653,117 +1674,330 @@ function renderAll() {
 }
 
 
-/* ADMIN PANEL */
+/* LOAD DATA FROM SUPABASE */
+
+async function loadData() {
+    if (!db) return;
+
+    const [membersResult, newsResult, galleryResult] = await Promise.all([
+        db.from('family_members').select('*').order('created_at', { ascending: false }),
+        db.from('family_news').select('*').order('created_at', { ascending: false }),
+        db.from('family_gallery').select('*').order('created_at', { ascending: false })
+    ]);
+
+    if (membersResult.error) console.error('Members:', membersResult.error);
+    if (newsResult.error) console.error('News:', newsResult.error);
+    if (galleryResult.error) console.error('Gallery:', galleryResult.error);
+
+    if (membersResult.error || newsResult.error || galleryResult.error) {
+        console.error('Не удалось загрузить некоторые данные из Supabase.');
+        return;
+    }
+
+    data.members = membersResult.data || [];
+    data.news = newsResult.data || [];
+    data.gallery = galleryResult.data || [];
+
+    renderAll();
+}
+
+
+/* ADMIN PANEL OPEN / CLOSE */
 
 const adminToggle = document.getElementById('adminToggle');
 const adminPanel = document.getElementById('adminPanel');
 
-adminToggle.addEventListener('click', () => {
-    const opened = adminPanel.classList.toggle('open');
+if (adminToggle && adminPanel) {
+    adminToggle.addEventListener('click', () => {
+        const opened = adminPanel.classList.toggle('open');
 
-    adminToggle.textContent = opened
-        ? '✕ ЗАКРЫТЬ АДМИН-ПАНЕЛЬ'
-        : '⚙ ОТКРЫТЬ АДМИН-ПАНЕЛЬ';
-});
+        adminToggle.textContent = opened
+            ? '✕ ЗАКРЫТЬ АДМИН-ПАНЕЛЬ'
+            : '⚙ ОТКРЫТЬ АДМИН-ПАНЕЛЬ';
+    });
+}
 
-document.getElementById('memberForm').addEventListener('submit', event => {
-    event.preventDefault();
 
-    const form = event.currentTarget;
-    const values = new FormData(form);
+/* AUTH ELEMENTS */
 
-    const name = String(values.get('name') || '').trim();
-    const role = String(values.get('role') || '').trim();
-    const wins = Number(values.get('wins')) || 0;
-    const avatar = String(values.get('avatar') || '').trim();
+const loginForm = document.getElementById('loginForm');
+const loginMessage = document.getElementById('loginMessage');
+const adminLogin = document.getElementById('adminLogin');
+const adminContent = document.getElementById('adminContent');
+const adminWelcome = document.getElementById('adminWelcome');
+const logoutButton = document.getElementById('logoutButton');
 
-    if (!name || !role || wins < 0 || wins > 9999) return;
 
-    if (avatar && !validImageUrl(avatar)) {
-        alert('Укажи корректную ссылку на аватарку.');
+/* CHECK ADMIN PERMISSIONS */
+
+async function checkAccess(user) {
+    currentUser = user;
+    currentRole = null;
+
+    if (!user) {
+        if (adminLogin) adminLogin.hidden = false;
+        if (adminContent) adminContent.hidden = true;
+        showMessage(loginMessage, '');
         return;
     }
 
-    data.members.push({
-        name,role,wins,avatar
-    });
+    const { data: admin, error } = await db
+        .from('site_admins')
+        .select('role')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-    saveData();
-    form.reset();
-});
-
-document.getElementById('newsForm').addEventListener('submit', event => {
-    event.preventDefault();
-
-    const form = event.currentTarget;
-    const values = new FormData(form);
-
-    const title = String(values.get('title') || '').trim();
-    const text = String(values.get('text') || '').trim();
-
-    if (!title || !text) return;
-
-    data.news.unshift({
-        title,
-        text,
-        date: new Date().toLocaleDateString('ru-RU')
-    });
-
-    saveData();
-    form.reset();
-});
-
-document.getElementById('galleryForm').addEventListener('submit', event => {
-    event.preventDefault();
-
-    const form = event.currentTarget;
-    const values = new FormData(form);
-
-    const url = validImageUrl(String(values.get('url') || '').trim());
-    const caption = String(values.get('caption') || '').trim();
-
-    if (!url || !caption) {
-        alert('Проверь ссылку и подпись.');
+    if (error) {
+        console.error('Admin check error:', error);
+        showMessage(loginMessage, 'Не удалось проверить права доступа.');
+        if (adminLogin) adminLogin.hidden = false;
+        if (adminContent) adminContent.hidden = true;
         return;
     }
 
-    data.gallery.unshift({url,caption});
-
-    saveData();
-    form.reset();
-});
-
-document.getElementById('adminPanel').addEventListener('click', event => {
-    const button = event.target.closest('button');
-
-    if (!button) return;
-
-    if (button.dataset.deleteMember !== undefined) {
-        const index = Number(button.dataset.deleteMember);
-        if (confirm('Удалить этого участника?')) {
-            data.members.splice(index,1);
-            saveData();
-        }
+    if (!admin || !['owner', 'admin'].includes(admin.role)) {
+        showMessage(loginMessage, 'У этой учётной записи нет прав администратора.');
+        if (adminLogin) adminLogin.hidden = false;
+        if (adminContent) adminContent.hidden = true;
+        return;
     }
 
-    if (button.dataset.deleteNews !== undefined) {
-        const index = Number(button.dataset.deleteNews);
-        if (confirm('Удалить эту новость?')) {
-            data.news.splice(index,1);
-            saveData();
-        }
+    currentRole = admin.role;
+
+    if (adminLogin) adminLogin.hidden = true;
+    if (adminContent) adminContent.hidden = false;
+
+    if (adminWelcome) {
+        adminWelcome.textContent = `Вы вошли как ${user.email} (${currentRole})`;
     }
 
-    if (button.dataset.deleteGallery !== undefined) {
-        const index = Number(button.dataset.deleteGallery);
-        if (confirm('Удалить эту фотографию?')) {
-            data.gallery.splice(index,1);
-            saveData();
-        }
-    }
-});
+    showMessage(loginMessage, '');
+    await loadData();
+}
 
-renderAll();
+
+/* LOGIN */
+
+if (loginForm) {
+    loginForm.addEventListener('submit', async event => {
+        event.preventDefault();
+
+        if (!db) {
+            showMessage(loginMessage, 'Подключение к серверу ещё не готово.');
+            return;
+        }
+
+        const values = new FormData(loginForm);
+        const email = String(values.get('email') || '').trim();
+        const password = String(values.get('password') || '');
+
+        if (!email || !password) {
+            showMessage(loginMessage, 'Заполни email и пароль.');
+            return;
+        }
+
+        showMessage(loginMessage, 'Выполняется вход...');
+
+        const { data: result, error } = await db.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (error) {
+            showMessage(loginMessage, 'Не удалось войти. Проверь email и пароль.');
+            console.error('Login error:', error);
+            return;
+        }
+
+        await checkAccess(result.user);
+        loginForm.reset();
+    });
+}
+
+
+/* LOGOUT */
+
+if (logoutButton) {
+    logoutButton.addEventListener('click', async () => {
+        if (!db) return;
+
+        const { error } = await db.auth.signOut();
+
+        if (error) {
+            alert('Не удалось выйти из аккаунта.');
+            console.error(error);
+            return;
+        }
+
+        currentUser = null;
+        currentRole = null;
+
+        if (adminLogin) adminLogin.hidden = false;
+        if (adminContent) adminContent.hidden = true;
+
+        showMessage(loginMessage, 'Вы вышли из аккаунта.');
+    });
+}
+
+
+/* ADD MEMBER */
+
+const memberForm = document.getElementById('memberForm');
+
+if (memberForm) {
+    memberForm.addEventListener('submit', async event => {
+        event.preventDefault();
+
+        if (!currentRole) return;
+
+        const values = new FormData(memberForm);
+
+        const name = String(values.get('name') || '').trim();
+        const role = String(values.get('role') || '').trim();
+        const wins = Number(values.get('wins')) || 0;
+        const avatar = String(values.get('avatar') || '').trim();
+
+        if (!name || !role || wins < 0 || wins > 9999) return;
+
+        if (avatar && !validImageUrl(avatar)) {
+            alert('Укажи корректную ссылку на аватарку.');
+            return;
+        }
+
+        const { error } = await db.from('family_members').insert({
+            name,
+            role,
+            wins,
+            avatar
+        });
+
+        if (error) {
+            alert('Не удалось добавить участника.');
+            console.error(error);
+            return;
+        }
+
+        memberForm.reset();
+        await loadData();
+    });
+}
+
+
+/* ADD NEWS */
+
+const newsForm = document.getElementById('newsForm');
+
+if (newsForm) {
+    newsForm.addEventListener('submit', async event => {
+        event.preventDefault();
+
+        if (!currentRole) return;
+
+        const values = new FormData(newsForm);
+
+        const title = String(values.get('title') || '').trim();
+        const body = String(values.get('text') || '').trim();
+
+        if (!title || !body) return;
+
+        const { error } = await db.from('family_news').insert({
+            title,
+            body
+        });
+
+        if (error) {
+            alert('Не удалось добавить новость.');
+            console.error(error);
+            return;
+        }
+
+        newsForm.reset();
+        await loadData();
+    });
+}
+
+
+/* ADD GALLERY PHOTO */
+
+const galleryForm = document.getElementById('galleryForm');
+
+if (galleryForm) {
+    galleryForm.addEventListener('submit', async event => {
+        event.preventDefault();
+
+        if (!currentRole) return;
+
+        const values = new FormData(galleryForm);
+
+        const image_url = validImageUrl(
+            String(values.get('url') || '').trim()
+        );
+
+        const caption = String(values.get('caption') || '').trim();
+
+        if (!image_url || !caption) {
+            alert('Проверь ссылку и подпись.');
+            return;
+        }
+
+        const { error } = await db.from('family_gallery').insert({
+            image_url,
+            caption
+        });
+
+        if (error) {
+            alert('Не удалось добавить фотографию.');
+            console.error(error);
+            return;
+        }
+
+        galleryForm.reset();
+        await loadData();
+    });
+}
+
+
+/* DELETE ITEMS */
+
+if (adminPanel) {
+    adminPanel.addEventListener('click', async event => {
+        const button = event.target.closest('button');
+        if (!button || !currentRole) return;
+
+        let table = null;
+        let id = null;
+        let question = '';
+
+        if (button.dataset.deleteMember) {
+            table = 'family_members';
+            id = button.dataset.deleteMember;
+            question = 'Удалить этого участника?';
+        } else if (button.dataset.deleteNews) {
+            table = 'family_news';
+            id = button.dataset.deleteNews;
+            question = 'Удалить эту новость?';
+        } else if (button.dataset.deleteGallery) {
+            table = 'family_gallery';
+            id = button.dataset.deleteGallery;
+            question = 'Удалить эту фотографию?';
+        }
+
+        if (!table || !id || !confirm(question)) return;
+
+        const { error } = await db
+            .from(table)
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            alert('Не удалось удалить запись.');
+            console.error(error);
+            return;
+        }
+
+        await loadData();
+    });
+}
 
 
 /* MUSIC */
@@ -1773,87 +2007,117 @@ const musicButton = document.getElementById('musicButton');
 const slider = document.getElementById('volumeSlider');
 const volumeValue = document.getElementById('volumeValue');
 
-music.volume = 0.25;
+if (music && musicButton) {
+    music.volume = 0.25;
 
-musicButton.addEventListener('click', async () => {
-    if (music.paused) {
-        try {
-            await music.play();
-            musicButton.classList.add('playing');
-            musicButton.textContent = 'Ⅱ';
-        } catch (error) {
-            alert('Не удалось загрузить музыку. Проверь наличие music.mp3.');
+    musicButton.addEventListener('click', async () => {
+        if (music.paused) {
+            try {
+                await music.play();
+                musicButton.classList.add('playing');
+                musicButton.textContent = 'Ⅱ';
+            } catch (error) {
+                alert('Не удалось загрузить музыку. Проверь наличие music.mp3.');
+            }
+        } else {
+            music.pause();
+            musicButton.classList.remove('playing');
+            musicButton.textContent = '♪';
         }
-    } else {
-        music.pause();
-        musicButton.classList.remove('playing');
-        musicButton.textContent = '♪';
-    }
-});
+    });
+}
 
-slider.addEventListener('input', () => {
-    music.volume = Number(slider.value)/100;
-    volumeValue.textContent = slider.value + '%';
-});
+if (music && slider && volumeValue) {
+    slider.addEventListener('input', () => {
+        music.volume = Number(slider.value) / 100;
+        volumeValue.textContent = slider.value + '%';
+    });
+}
 
 
-/* SUPABASE LIVE ONLINE */
+/* START SUPABASE */
 
-const SUPABASE_URL = 'ВСТАВЬ_PROJECT_URL';
-const SUPABASE_KEY = 'ВСТАВЬ_PUBLISHABLE_KEY';
+async function startSupabase() {
+    try {
+        const response = await fetch(
+            'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'
+        );
 
-if (
-    SUPABASE_URL.startsWith('https://') &&
-    !SUPABASE_URL.includes('ВСТАВЬ') &&
-    SUPABASE_KEY &&
-    !SUPABASE_KEY.includes('ВСТАВЬ')
-) {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+        if (!response.ok) throw new Error('Не удалось загрузить библиотеку Supabase.');
 
-    script.onload = () => {
-        try {
-            const client = window.supabase.createClient(
-                SUPABASE_URL,
-                SUPABASE_KEY
-            );
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+        script.onload = async () => {
+            try {
+                db = window.supabase.createClient(
+                    SUPABASE_URL,
+                    SUPABASE_KEY
+                );
 
-            const channel = client.channel('eco-famq-online', {
-                config: {
-                    presence: {
-                        key: crypto.randomUUID()
-                    }
-                }
-            });
+                const { data: sessionData, error } = await db.auth.getSession();
 
-            channel
-                .on('presence',{event:'sync'},() => {
-                    const state = channel.presenceState();
+                if (error) throw error;
 
-                    const total = Object.values(state)
-                        .reduce((sum,users) => sum + users.length,0);
+                await checkAccess(sessionData.session?.user || null);
 
-                    document.getElementById('onlineCount').textContent = total;
-                })
-                .subscribe(async status => {
-                    if (status === 'SUBSCRIBED') {
-                        await channel.track({
-                            online_at:new Date().toISOString()
-                        });
+                db.auth.onAuthStateChange((event, session) => {
+                    if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+                        setTimeout(() => {
+                            checkAccess(session?.user || null);
+                        }, 0);
                     }
                 });
-        } catch(error) {
-            console.error('Online counter error:',error);
-            document.getElementById('onlineCount').textContent = '—';
-        }
-    };
 
-    script.onerror = () => {
-        document.getElementById('onlineCount').textContent = '—';
-    };
+                /* ONLINE COUNTER */
 
-    document.head.appendChild(script);
+                const onlineCount = document.getElementById('onlineCount');
+
+                const channel = db.channel('eco-famq-online', {
+                    config: {
+                        presence: {
+                            key: crypto.randomUUID
+                                ? crypto.randomUUID()
+                                : String(Date.now())
+                        }
+                    }
+                });
+
+                channel
+                    .on('presence', { event: 'sync' }, () => {
+                        const state = channel.presenceState();
+
+                        const total = Object.values(state)
+                            .reduce((sum, users) => sum + users.length, 0);
+
+                        if (onlineCount) onlineCount.textContent = total;
+                    })
+                    .subscribe(async status => {
+                        if (status === 'SUBSCRIBED') {
+                            await channel.track({
+                                online_at: new Date().toISOString()
+                            });
+                        }
+                    });
+
+            } catch (error) {
+                console.error('Supabase error:', error);
+                showMessage(loginMessage, 'Ошибка подключения к Supabase.');
+            }
+        };
+
+        script.onerror = () => {
+            showMessage(loginMessage, 'Не удалось загрузить Supabase.');
+        };
+
+        document.head.appendChild(script);
+
+    } catch (error) {
+        console.error(error);
+        showMessage(loginMessage, 'Не удалось подключиться к серверу.');
+    }
 }
+
+startSupabase();
 
 </script>
 
