@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECO FAMQ | RADMIR RP</title>
+    <style>
+        :root {
+            --bg-color: #0b0c10;
+            --text-color: #c5c6c7;
+            --accent-green: #45f3ff;
+            --accent-purple: #8a2be2;
+            --accent-gold: #ffd700;
+            --card-bg: rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 10%, rgba(138, 43, 226, 0.2), transparent 50%),
+                              radial-gradient(circle at 10% 80%, rgba(69, 243, 255, 0.1), transparent 40%);
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            position: relative;
+        }
+
+        .logo-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3), 0 0 20px var(--accent-purple);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        section {
+            margin-bottom: 60px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #fff;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        .join-box {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.25), rgba(69, 243, 255, 0.15));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .join-box h3 {
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .join-box p {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        .btn-discord {
+            display: inline-block;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #5865F2;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(88, 101, 242, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-discord:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(88, 101, 242, 0.6);
+            background-color: #4752c4;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .achieve-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .achieve-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .achieve-card.gold-border { box-shadow: 0 5px 15px rgba(255, 215, 0, 0.1), inset 0 0 20px rgba(0,0,0,0.8); }
+        .achieve-card.purple-border { box-shadow: 0 5px 15px rgba(138, 43, 226, 0.1), inset 0 0 20px rgba(0,0,0,0.8); }
+        .achieve-card.green-border { box-shadow: 0 5px 15px rgba(69, 243, 255, 0.1), inset 0 0 20px rgba(0,0,0,0.8); }
+
+        .achieve-img-container {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background-color: #000;
+        }
+
+        .achieve-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .achieve-card:hover .achieve-img {
+            transform: scale(1.05);
+        }
+
+        .achieve-info {
+            padding: 25px;
+        }
+
+        .achieve-date {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .achieve-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .achieve-prize {
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            font-weight: bold;
+        }
+
+        .media-box {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .media-username {
+            font-size: 1.6rem;
+            color: #fff;
+            margin-bottom: 25px;
+        }
+
+        .media-username span {
+            color: var(--accent-green);
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(69, 243, 255, 0.3);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            padding: 12px 30px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+            filter: brightness(1.2);
+        }
+
+        .twitch { background-color: #9146FF; }
+        .youtube { background-color: #FF0000; }
+        .tiktok { background-color: #000000; border: 1px solid rgba(255,255,255,0.3); }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 0.9rem;
+            color: #555;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-title">ECO FAMQ</div>
+        <div class="subtitle">Единство, Честь, Победа. Мы пишем историю.</div>
+    </header>
+
+    <div class="container">
+
+        <!-- ВСТУПЛЕНИЕ В СЕМЬЮ -->
+        <section id="recruitment">
+            <div class="join-box">
+                <h3>Вступить в семью</h3>
+                <p>Хочешь побеждать вместе с лучшими? Подать заявку на вступление можно в нашем Discord-сервере!</p>
+                <!-- Ссылка на ваш Discord -->
+                <a href="https://discord.gg/8NdkeCbK5Z" target="_blank" class="btn-discord">Подать заявку тут</a>
+            </div>
+        </section>
+
+        <!-- НАШИ ДОСТИЖЕНИЯ -->
+        <section id="achievements">
+            <h2>Наши достижения</h2>
+            <div class="achievements-grid">
+                
+                <!-- Достижение 1 (Radmir Cap) -->
+                <div class="achieve-card gold-border">
+                    <div class="achieve-img-container">
+                        <!-- Локальная ссылка на картинку cap.png -->
+                        <img src="1.png" alt="Radmir Cap" class="achieve-img">
+                    </div>
+                    <div class="achieve-info">
+                        <div class="achieve-date">14.03.2026</div>
+                        <div class="achieve-title">ПОБЕДИТЕЛИ RADMIR CAP S1</div>
+                        <div class="achieve-prize">🏆 1 МЕСТО | ПРИЗ 25.000Р</div>
+                    </div>
+                </div>
+
+                <!-- Достижение 2 (Мой Дом) -->
+                <div class="achieve-card purple-border">
+                    <div class="achieve-img-container">
+                        <!-- Локальная ссылка на картинку home.png -->
+                        • <img src="2.png" alt="Турнир Мой Дом" class="achieve-img">
+                    </div>
+                    <div class="achieve-info">
+                        <div class="achieve-date">19.04.2026</div>
+                        <div class="achieve-title">УЧАСТНИКИ ТУРНИРА МОЙ ДОМ</div>
+                        <div class="achieve-prize">🏆 3 МЕСТО | ПРИЗ 10.000Р</div>
+                    </div>
+                </div>
+
+                <!-- Достижение 3 (Гольф Клуб) -->
+                <div class="achieve-card green-border">
+                    <div class="achieve-img-container">
+                        <!-- Локальная ссылка на картинку golf.png -->
+                         <img src="3.png" alt="Война за Гольф Клуб" class="achieve-img">
+                    </div>
+                    <div class="achieve-info">
+                        <div class="achieve-date">02.05.2026</div>
+                        <div class="achieve-title">ПОБЕДИТЕЛИ ТУРНИРА ЗА ГОЛЬФ КЛУБ S1</div>
+                        <div class="achieve-prize">🏆 ПРИЗ 50.000Р</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- МЕДИА РАЗДЕЛ KERTY66 -->
+        <section id="media">
+            <h2>Медиа & Соцсети</h2>
+            <div class="media-box">
+                <div class="media-username">Следите за контентом от <span>kerty66</span>:</div>
+                <div class="social-links">
+                    <!-- Прямые ссылки на профили kerty66 -->
+                    <a href="https://www.twitch.tv/kerty66" target="_blank" class="social-btn twitch">Twitch</a>
+                    <a href="https://www.youtube.com/@kerty_66" target="_blank" class="social-btn youtube">YouTube</a>
+                    <a href="https://www.tiktok.com/@kerty660" target="_blank" class="social-btn tiktok">TikTok</a>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 ECO FAMQ. Разработано для игроков Radmir GTA 5 RP.</p>
+    </footer>
+
+</body>
+</html>
