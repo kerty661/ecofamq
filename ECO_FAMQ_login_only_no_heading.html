@@ -1,0 +1,2400 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050505">
+<title>ECO FAMQ | DEAD INSIDE</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg:#050505;
+    --card:#101010;
+    --white:#fff;
+    --silver:#aaa;
+    --border:rgba(255,255,255,.14);
+}
+
+* {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html {
+    scroll-behavior:smooth;
+    scroll-padding-top:100px;
+}
+
+body {
+    background:var(--bg);
+    color:white;
+    font-family:'Montserrat',sans-serif;
+    overflow-x:hidden;
+}
+
+body::before {
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    pointer-events:none;
+    background:
+      radial-gradient(circle at 50% 0%,#292929 0,transparent 40%),
+      radial-gradient(circle at 0% 70%,#171717 0,transparent 35%),
+      radial-gradient(circle at 100% 80%,#1c1c1c 0,transparent 35%);
+}
+
+body::after {
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:20;
+    pointer-events:none;
+    opacity:.025;
+    background:repeating-linear-gradient(
+      transparent 0 3px,
+      white 4px
+    );
+}
+
+button,input,textarea {
+    font:inherit;
+}
+
+button,a {
+    -webkit-tap-highlight-color:transparent;
+}
+
+a {
+    color:inherit;
+}
+
+/* LOADING SCREEN */
+
+#loader {
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    background:#050505;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    transition:opacity .8s,visibility .8s;
+}
+
+#loader.hide {
+    opacity:0;
+    visibility:hidden;
+}
+
+.loader-logo {
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(35px,9vw,75px);
+    font-weight:900;
+    letter-spacing:8px;
+    background:linear-gradient(100deg,#555,#fff,#777,#fff);
+    background-size:250%;
+    color:transparent;
+    background-clip:text;
+    animation:metal 2s linear infinite;
+}
+
+.loader-line {
+    width:180px;
+    height:2px;
+    background:#333;
+    margin-top:30px;
+    overflow:hidden;
+}
+
+.loader-line::after {
+    content:"";
+    display:block;
+    width:50%;
+    height:100%;
+    background:white;
+    animation:loading 1.3s infinite;
+}
+
+.loader-caption {
+    margin-top:15px;
+    font-size:10px;
+    letter-spacing:5px;
+    color:#777;
+}
+
+@keyframes loading {
+    from {transform:translateX(-100%)}
+    to {transform:translateX(200%)}
+}
+
+@keyframes metal {
+    to {background-position:250% center}
+}
+
+/* BACKGROUND LIGHT */
+
+.light {
+    position:fixed;
+    width:400px;
+    height:400px;
+    top:15%;
+    left:50%;
+    transform:translateX(-50%);
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%);
+    pointer-events:none;
+    z-index:-1;
+    animation:lightMove 8s ease-in-out infinite alternate;
+}
+
+@keyframes lightMove {
+    to {transform:translate(30%,-10%)}
+}
+
+/* NAVIGATION */
+
+.navbar {
+    position:sticky;
+    top:0;
+    z-index:100;
+    width:100%;
+    background:rgba(5,5,5,.85);
+    backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--border);
+}
+
+.nav-inner {
+    max-width:1250px;
+    min-height:72px;
+    padding:12px 20px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+}
+
+.nav-logo {
+    font-family:'Orbitron',sans-serif;
+    font-weight:900;
+    font-size:20px;
+    letter-spacing:3px;
+    white-space:nowrap;
+    text-decoration:none;
+    background:linear-gradient(100deg,#777,#fff,#888);
+    background-clip:text;
+    color:transparent;
+}
+
+.nav-links {
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    align-items:center;
+}
+
+.nav-links a {
+    text-decoration:none;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    color:#999;
+    transition:.3s;
+}
+
+.nav-links a:hover {
+    color:white;
+    text-shadow:0 0 12px white;
+}
+
+.menu-toggle {
+    display:none;
+    background:none;
+    border:1px solid #555;
+    color:white;
+    border-radius:5px;
+    padding:8px 12px;
+    cursor:pointer;
+}
+
+/* GENERAL */
+
+.container {
+    max-width:1250px;
+    margin:auto;
+    padding:20px;
+}
+
+section {
+    margin:90px 0;
+}
+
+.section-title {
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(22px,4vw,34px);
+    text-align:center;
+    letter-spacing:4px;
+    margin-bottom:40px;
+}
+
+.section-title::after {
+    content:"";
+    display:block;
+    width:90px;
+    height:2px;
+    background:linear-gradient(90deg,transparent,white,transparent);
+    margin:17px auto 0;
+}
+
+.muted {
+    color:#888;
+}
+
+.hidden {
+    opacity:0;
+    transform:translateY(35px);
+    transition:.8s;
+}
+
+.hidden.show {
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* HERO */
+
+.hero {
+    min-height:510px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    text-align:center;
+    padding:80px 15px;
+}
+
+.hero-title {
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(45px,11vw,105px);
+    font-weight:900;
+    letter-spacing:clamp(3px,2vw,13px);
+    background:linear-gradient(120deg,#555,#fff,#888,#fff,#444);
+    background-size:300%;
+    color:transparent;
+    background-clip:text;
+    animation:metal 6s linear infinite;
+    filter:drop-shadow(0 0 20px #ffffff35);
+}
+
+.hero-subtitle {
+    margin-top:22px;
+    color:#aaa;
+    font-size:12px;
+    letter-spacing:4px;
+    line-height:2;
+}
+
+.hero-line {
+    width:130px;
+    height:2px;
+    background:white;
+    box-shadow:0 0 15px white;
+    margin-top:30px;
+    animation:linePulse 3s infinite;
+}
+
+@keyframes linePulse {
+    50% {width:220px;opacity:.3}
+}
+
+/* ONLINE */
+
+.online-panel {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:15px;
+    width:max-content;
+    max-width:100%;
+    margin:0 auto 35px;
+    padding:15px 25px;
+    border:1px solid var(--border);
+    background:#ffffff08;
+    border-radius:8px;
+    backdrop-filter:blur(12px);
+}
+
+.online-dot {
+    width:9px;
+    height:9px;
+    background:white;
+    border-radius:50%;
+    box-shadow:0 0 15px white;
+    animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    50% {opacity:.25}
+}
+
+.online-label {
+    font-family:'Orbitron',sans-serif;
+    font-size:10px;
+    letter-spacing:2px;
+    color:#aaa;
+}
+
+.online-number {
+    font-family:'Orbitron',sans-serif;
+    font-size:23px;
+    font-weight:900;
+}
+
+/* CARDS */
+
+.card {
+    background:linear-gradient(135deg,#ffffff0d,#ffffff02);
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 12px 35px #0008;
+    transition:.4s;
+}
+
+.card:hover {
+    transform:translateY(-7px);
+    border-color:#ffffff75;
+    box-shadow:0 15px 40px #ffffff12;
+}
+
+.join-box {
+    text-align:center;
+    padding:45px 20px;
+}
+
+.join-box h2 {
+    font-family:'Orbitron',sans-serif;
+    font-size:25px;
+    margin-bottom:18px;
+}
+
+.join-box p {
+    color:#aaa;
+    line-height:1.8;
+    margin-bottom:25px;
+}
+
+.main-btn {
+    display:inline-block;
+    background:linear-gradient(120deg,#777,#fff,#aaa);
+    background-size:200%;
+    color:black;
+    padding:15px 32px;
+    border-radius:5px;
+    text-decoration:none;
+    font-weight:900;
+    letter-spacing:2px;
+    border:0;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.main-btn:hover {
+    background-position:right;
+    transform:translateY(-3px);
+    box-shadow:0 0 25px #ffffff55;
+}
+
+/* STATISTICS */
+
+.stats-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.stat-card {
+    text-align:center;
+    padding:28px 12px;
+}
+
+.stat-number {
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(25px,5vw,38px);
+    font-weight:900;
+    color:white;
+    text-shadow:0 0 15px #ffffff50;
+}
+
+.stat-label {
+    margin-top:12px;
+    color:#888;
+    font-size:10px;
+    letter-spacing:2px;
+}
+
+/* MEMBERS */
+
+.members-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.member-card {
+    padding:28px 15px;
+    text-align:center;
+}
+
+.avatar {
+    width:100px;
+    height:100px;
+    margin:0 auto 18px;
+    border-radius:50%;
+    border:2px solid #aaa;
+    background:linear-gradient(135deg,#444,#090909);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    font-family:'Orbitron',sans-serif;
+    font-size:27px;
+    font-weight:900;
+    box-shadow:0 0 22px #ffffff20;
+}
+
+.avatar img {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.member-name {
+    font-family:'Orbitron',sans-serif;
+    font-size:15px;
+    margin-bottom:9px;
+    overflow-wrap:anywhere;
+}
+
+.member-role {
+    color:#999;
+    font-size:11px;
+    letter-spacing:2px;
+}
+
+.member-wins {
+    color:#ddd;
+    font-size:12px;
+    margin-top:15px;
+}
+
+/* LEADERBOARD */
+
+.table-wrap {
+    overflow-x:auto;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:#ffffff05;
+}
+
+table {
+    width:100%;
+    border-collapse:collapse;
+    min-width:480px;
+}
+
+th,td {
+    padding:18px 15px;
+    text-align:left;
+    border-bottom:1px solid #ffffff12;
+    font-size:13px;
+}
+
+th {
+    font-family:'Orbitron',sans-serif;
+    color:#888;
+    font-size:10px;
+    letter-spacing:1.5px;
+}
+
+td:first-child {
+    font-weight:900;
+    color:white;
+}
+
+tr:last-child td {
+    border-bottom:0;
+}
+
+/* ACHIEVEMENTS AND GALLERY */
+
+.achievements-grid,
+.gallery-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+    gap:22px;
+}
+
+.achievement-image {
+    width:100%;
+    height:205px;
+    object-fit:cover;
+    display:block;
+    filter:grayscale(100%);
+    transition:.6s;
+}
+
+.card:hover .achievement-image {
+    filter:grayscale(15%);
+    transform:scale(1.04);
+}
+
+.image-wrap {
+    overflow:hidden;
+    background:#111;
+}
+
+.achievement-info {
+    padding:23px;
+}
+
+.achievement-date {
+    font-size:11px;
+    letter-spacing:2px;
+    color:#888;
+    margin-bottom:12px;
+}
+
+.achievement-title {
+    font-family:'Orbitron',sans-serif;
+    font-size:14px;
+    line-height:1.7;
+    margin-bottom:14px;
+}
+
+.achievement-prize {
+    color:#ddd;
+    font-size:13px;
+    font-weight:800;
+}
+
+.gallery-card {
+    position:relative;
+    cursor:pointer;
+}
+
+.gallery-card img {
+    width:100%;
+    height:220px;
+    object-fit:cover;
+    filter:grayscale(100%);
+    transition:.5s;
+    display:block;
+}
+
+.gallery-card:hover img {
+    filter:grayscale(0%);
+    transform:scale(1.05);
+}
+
+.gallery-caption {
+    padding:15px;
+    font-size:12px;
+    color:#ccc;
+}
+
+/* NEWS */
+
+.news-list {
+    display:grid;
+    gap:18px;
+}
+
+.news-card {
+    padding:25px;
+}
+
+.news-date {
+    font-size:10px;
+    letter-spacing:2px;
+    color:#888;
+    margin-bottom:12px;
+}
+
+.news-title {
+    font-family:'Orbitron',sans-serif;
+    font-size:16px;
+    margin-bottom:12px;
+}
+
+.news-text {
+    font-size:13px;
+    line-height:1.8;
+    color:#aaa;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+}
+
+/* MEDIA */
+
+.creator {
+    padding:30px 15px;
+    text-align:center;
+}
+
+.creator + .creator {
+    border-top:1px solid var(--border);
+}
+
+.creator-name {
+    font-family:'Orbitron',sans-serif;
+    font-size:21px;
+    letter-spacing:3px;
+    margin-bottom:25px;
+}
+
+.creator-name span {
+    color:#888;
+}
+
+.social-links {
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.social-btn {
+    padding:13px 24px;
+    border:1px solid #555;
+    border-radius:5px;
+    text-decoration:none;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:2px;
+    transition:.3s;
+}
+
+.social-btn:hover {
+    color:black;
+    background:white;
+    transform:translateY(-4px);
+}
+
+/* ADMIN */
+
+.admin-trigger {
+    background:transparent;
+    color:#888;
+    border:1px solid #444;
+    padding:12px 18px;
+    cursor:pointer;
+    border-radius:5px;
+    font-size:11px;
+    letter-spacing:2px;
+    transition:.3s;
+}
+
+.admin-trigger:hover {
+    color:white;
+    border-color:white;
+}
+
+.admin-panel {
+    display:none;
+    padding:25px;
+    margin-top:25px;
+    border:1px solid #555;
+    border-radius:10px;
+    background:#101010;
+}
+
+.admin-panel.open {
+    display:block;
+}
+
+.admin-panel h3 {
+    font-family:'Orbitron',sans-serif;
+    font-size:17px;
+    margin:25px 0 15px;
+}
+
+.admin-panel h3:first-child {
+    margin-top:0;
+}
+
+.admin-form {
+    display:grid;
+    gap:12px;
+}
+
+.admin-form input,
+.admin-form textarea {
+    width:100%;
+    padding:13px;
+    background:#080808;
+    color:white;
+    border:1px solid #444;
+    border-radius:5px;
+    outline:none;
+}
+
+.admin-form input:focus,
+.admin-form textarea:focus {
+    border-color:white;
+}
+
+.admin-form textarea {
+    min-height:90px;
+    resize:vertical;
+}
+
+.admin-form button,
+.delete-btn {
+    padding:12px;
+    background:#eee;
+    color:black;
+    border:0;
+    border-radius:5px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.admin-list {
+    display:grid;
+    gap:8px;
+}
+
+.admin-item {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    padding:12px;
+    border:1px solid #333;
+    border-radius:5px;
+    font-size:12px;
+}
+
+.delete-btn {
+    padding:8px 12px;
+    background:#333;
+    color:white;
+    flex-shrink:0;
+}
+
+.admin-note {
+    color:#888;
+    font-size:11px;
+    line-height:1.7;
+    margin-bottom:15px;
+}
+
+/* MUSIC PLAYER */
+
+.music-player {
+    position:fixed;
+    right:22px;
+    bottom:22px;
+    z-index:150;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+#musicButton {
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    border:1px solid white;
+    background:#111e;
+    color:white;
+    font-size:24px;
+    cursor:pointer;
+    backdrop-filter:blur(12px);
+    box-shadow:0 0 20px #ffffff22;
+    transition:.3s;
+}
+
+#musicButton:hover {
+    background:white;
+    color:black;
+}
+
+#musicButton.playing {
+    animation:pulse 2s infinite;
+}
+
+.volume-panel {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:12px;
+    border:1px solid #ffffff35;
+    background:#080808ed;
+    border-radius:30px;
+    font-size:10px;
+    color:#aaa;
+}
+
+#volumeSlider {
+    width:75px;
+    accent-color:white;
+    cursor:pointer;
+}
+
+#volumeValue {
+    min-width:28px;
+}
+
+/* FOOTER */
+
+footer {
+    padding:45px 15px;
+    text-align:center;
+    border-top:1px solid var(--border);
+    color:#666;
+    font-size:11px;
+    letter-spacing:2px;
+    line-height:2;
+}
+
+.empty-state {
+    color:#777;
+    text-align:center;
+    padding:30px 15px;
+    border:1px dashed #444;
+    border-radius:8px;
+    font-size:12px;
+    line-height:1.8;
+}
+
+/* MOBILE */
+
+@media(max-width:850px) {
+    .menu-toggle {
+        display:block;
+    }
+
+    .nav-links {
+        display:none;
+        position:absolute;
+        top:100%;
+        left:0;
+        right:0;
+        padding:20px;
+        background:#080808f5;
+        border-bottom:1px solid #444;
+        flex-direction:column;
+        align-items:stretch;
+        gap:0;
+    }
+
+    .nav-links.open {
+        display:flex;
+    }
+
+    .nav-links a {
+        padding:14px;
+        border-bottom:1px solid #ffffff12;
+    }
+}
+
+@media(max-width:600px) {
+    .hero {
+        min-height:390px;
+    }
+
+    .hero-subtitle {
+        font-size:10px;
+        letter-spacing:2px;
+    }
+
+    .stats-grid {
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    section {
+        margin:70px 0;
+    }
+
+    .music-player {
+        right:10px;
+        bottom:12px;
+        gap:6px;
+    }
+
+    #musicButton {
+        width:48px;
+        height:48px;
+    }
+
+    .volume-panel {
+        padding:9px;
+        gap:5px;
+    }
+
+    #volumeSlider {
+        width:55px;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    *,*::before,*::after {
+        animation-duration:.01ms !important;
+        animation-iteration-count:1 !important;
+        scroll-behavior:auto !important;
+        transition-duration:.01ms !important;
+    }
+
+    .hidden {
+        opacity:1;
+        transform:none;
+    }
+}
+
+/* MINIMAL ACCOUNT + LIVE STATUS */
+#administration { transform:none !important; }
+#administration.hidden { opacity:1; }
+.account-button {
+    margin-left:auto; padding:9px 14px; border:1px solid #ffffff35;
+    border-radius:999px; background:#ffffff0a; color:#eee; cursor:pointer;
+    font-size:11px; letter-spacing:1px; transition:.2s; white-space:nowrap;
+}
+.account-button:hover { background:#fff; color:#080808; }
+.online-panel {
+    position:fixed; left:18px; bottom:18px; z-index:140;
+    display:flex; align-items:center; gap:9px; width:auto; margin:0;
+    padding:9px 13px; border:1px solid #ffffff24; border-radius:999px;
+    background:#080808d9; backdrop-filter:blur(14px);
+}
+.online-dot { width:7px; height:7px; background:#b8ffca; box-shadow:0 0 10px #8cffaa; }
+.online-label { font-family:'Montserrat',sans-serif; font-size:9px; letter-spacing:1px; }
+.online-number { font-family:'Montserrat',sans-serif; font-size:13px; font-weight:700; }
+.admin-panel.open {
+    display:block; position:fixed; z-index:500; inset:5vh 4vw;
+    max-width:1100px; margin:auto; overflow:auto; padding:25px;
+    border:1px solid #ffffff35; background:#090909f5;
+    box-shadow:0 20px 100px #000; border-radius:14px;
+}
+.admin-panel.open::before {
+    content:""; position:fixed; inset:0; z-index:-1;
+    background:#000b; backdrop-filter:blur(8px);
+}
+.admin-form input, .admin-form textarea { border-radius:8px; }
+.admin-form button, #logoutButton, .delete-btn, .edit-btn {
+    border-radius:8px; min-height:40px;
+}
+.admin-item { flex-wrap:wrap; }
+.admin-item > span { flex:1 1 180px; }
+.admin-actions { display:flex; gap:7px; }
+.edit-btn { padding:8px 12px; background:#ddd; color:#111; border:0; cursor:pointer; }
+.cms-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.cms-field { display:grid; gap:6px; color:#aaa; font-size:11px; }
+.cms-field input, .cms-field textarea { width:100%; padding:12px; background:#080808; color:#fff; border:1px solid #444; border-radius:7px; }
+.cms-field textarea { min-height:100px; resize:vertical; }
+@media(max-width:650px) {
+ .nav-inner { gap:8px; }
+ .account-button { padding:8px 10px; font-size:10px; }
+ .online-panel { left:10px; bottom:10px; padding:8px 10px; }
+ .admin-panel.open { inset:2vh 2vw; padding:16px; }
+ .cms-grid { grid-template-columns:1fr; }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOADING SCREEN -->
+
+<div id="loader">
+    <div class="loader-logo">ECO FAMQ</div>
+    <div class="loader-line"></div>
+    <div class="loader-caption">LOADING THE FAMILY</div>
+</div>
+
+<div class="light"></div>
+
+<!-- NAVIGATION -->
+
+<nav class="navbar">
+    <div class="nav-inner">
+
+        <a class="nav-logo" href="#home">ECO FAMQ</a>
+
+        <button class="menu-toggle" id="menuToggle"
+                aria-label="Открыть меню" aria-expanded="false">
+            ☰ MENU
+        </button>
+
+        <div class="nav-links" id="navLinks">
+            <a href="#home">ГЛАВНАЯ</a>
+            <a href="#stats">СТАТИСТИКА</a>
+            <a href="#members">СОСТАВ</a>
+            <a href="#leaders">ТОП</a>
+            <a href="#achievements">ПОБЕДЫ</a>
+            <a href="#news">НОВОСТИ</a>
+            <a href="#media">МЕДИА</a>
+            <a href="#recruitment">ВСТУПИТЬ</a>
+        </div>
+        <button type="button" class="account-button" id="accountButton">ВХОД</button>
+
+    </div>
+</nav>
+
+
+<!-- HERO -->
+
+<header class="hero" id="home">
+
+    <div class="hero-title" id="heroTitle">ECO FAMQ</div>
+
+    <div class="hero-subtitle" id="heroSubtitle">
+        ЕДИНСТВО. ЧЕСТЬ. ПОБЕДА.<br>
+        МЫ ПИШЕМ ИСТОРИЮ.
+    </div>
+
+    <div class="hero-line"></div>
+
+</header>
+
+
+<div class="container">
+
+<!-- LIVE COUNTER -->
+
+<div class="online-panel">
+    <div class="online-dot"></div>
+    <div>
+        <div class="online-label">SITE ONLINE</div>
+        <div class="online-number" id="onlineCount">—</div>
+    </div>
+</div>
+
+
+<!-- STATISTICS -->
+
+<section id="stats" class="hidden">
+
+    <h2 class="section-title" id="statsTitle">СТАТИСТИКА СЕМЬИ</h2>
+
+    <div class="stats-grid">
+
+        <div class="card stat-card">
+            <div class="stat-number" id="statMembers">0</div>
+            <div class="stat-label">УЧАСТНИКОВ</div>
+        </div>
+
+        <div class="card stat-card">
+            <div class="stat-number" id="statWins">2</div>
+            <div class="stat-label">ПОБЕД</div>
+        </div>
+
+        <div class="card stat-card">
+            <div class="stat-number" id="statPrize">85K</div>
+            <div class="stat-label">ПРИЗОВЫЕ</div>
+        </div>
+
+        <div class="card stat-card">
+            <div class="stat-number" id="statNews">0</div>
+            <div class="stat-label">НОВОСТЕЙ</div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- RECRUITMENT -->
+
+<section id="recruitment" class="hidden">
+
+    <div class="card join-box">
+
+        <h2 id="recruitmentTitle">ВСТУПИТЬ В СЕМЬЮ</h2>
+
+        <p id="recruitmentText">
+            Хочешь стать частью нашей истории?<br>
+            Присоединяйся к ECO FAMQ и побеждай вместе с нами.
+        </p>
+
+        <a id="recruitmentLink" href="https://discord.gg/8NdkeCbK5Z"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="main-btn">
+            ПОДАТЬ ЗАЯВКУ
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- FAMILY MEMBERS -->
+
+<section id="members" class="hidden">
+
+    <h2 class="section-title" id="membersTitle">СОСТАВ СЕМЬИ</h2>
+
+    <div class="members-grid" id="membersGrid"></div>
+
+</section>
+
+
+<!-- LEADERBOARD -->
+
+<section id="leaders" class="hidden">
+
+    <h2 class="section-title" id="leadersTitle">ТАБЛИЦА ЛИДЕРОВ</h2>
+
+    <div class="table-wrap">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>МЕСТО</th>
+                    <th>ИГРОК</th>
+                    <th>ДОЛЖНОСТЬ</th>
+                    <th>ПОБЕДЫ</th>
+                </tr>
+            </thead>
+
+            <tbody id="leaderboard"></tbody>
+        </table>
+
+    </div>
+
+</section>
+
+
+<!-- ACHIEVEMENTS -->
+
+<section id="achievements" class="hidden">
+
+    <h2 class="section-title" id="achievementsTitle">НАШИ ДОСТИЖЕНИЯ</h2>
+
+    <div class="achievements-grid" id="achievementsGrid">
+
+        <div class="card">
+            <div class="image-wrap">
+                <img src="1.png" alt="Radmir Cap" class="achievement-image">
+            </div>
+            <div class="achievement-info">
+                <div class="achievement-date">14.03.2026</div>
+                <div class="achievement-title">ПОБЕДИТЕЛИ RADMIR CAP S1</div>
+                <div class="achievement-prize">🏆 1 МЕСТО | 25.000Р</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="image-wrap">
+                <img src="2.png" alt="Мой Дом" class="achievement-image">
+            </div>
+            <div class="achievement-info">
+                <div class="achievement-date">19.04.2026</div>
+                <div class="achievement-title">ТУРНИР МОЙ ДОМ</div>
+                <div class="achievement-prize">🏆 3 МЕСТО | 10.000Р</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="image-wrap">
+                <img src="3.png" alt="Гольф Клуб" class="achievement-image">
+            </div>
+            <div class="achievement-info">
+                <div class="achievement-date">02.05.2026</div>
+                <div class="achievement-title">ПОБЕДИТЕЛИ ЗА ГОЛЬФ КЛУБ S1</div>
+                <div class="achievement-prize">🏆 50.000Р</div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- GALLERY -->
+
+<section id="gallery" class="hidden">
+
+    <h2 class="section-title" id="galleryTitle">ГАЛЕРЕЯ ПОБЕД</h2>
+
+    <div class="gallery-grid" id="galleryGrid">
+
+        <div class="card gallery-card">
+            <img src="1.png" alt="Radmir Cap">
+            <div class="gallery-caption">RADМIR CAP S1 • 1 МЕСТО</div>
+        </div>
+
+        <div class="card gallery-card">
+            <img src="2.png" alt="Мой Дом">
+            <div class="gallery-caption">МОЙ ДОМ • 3 МЕСТО</div>
+        </div>
+
+        <div class="card gallery-card">
+            <img src="3.png" alt="Гольф Клуб">
+            <div class="gallery-caption">ГОЛЬФ КЛУБ S1 • ПОБЕДА</div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- NEWS -->
+
+<section id="news" class="hidden">
+
+    <h2 class="section-title" id="newsTitle">НОВОСТИ СЕМЬИ</h2>
+
+    <div class="news-list" id="newsList"></div>
+
+</section>
+
+
+<!-- MEDIA -->
+
+<section id="media" class="hidden">
+
+    <h2 class="section-title" id="mediaTitle">МЕДИА И СОЦСЕТИ</h2>
+
+    <div class="card">
+
+        <div class="creator">
+
+            <div class="creator-name">
+                <span>MEDIA //</span> KERTY66
+            </div>
+
+            <div class="social-links">
+
+                <a class="social-btn"
+                   href="https://www.twitch.tv/kerty66"
+                   target="_blank" rel="noopener noreferrer">TWITCH</a>
+
+                <a class="social-btn"
+                   href="https://www.youtube.com/@kerty_66"
+                   target="_blank" rel="noopener noreferrer">YOUTUBE</a>
+
+                <a class="social-btn"
+                   href="https://www.tiktok.com/@kerty660"
+                   target="_blank" rel="noopener noreferrer">TIKTOK</a>
+
+            </div>
+
+        </div>
+
+        <div class="creator">
+
+            <div class="creator-name">
+                <span>MEDIA //</span> SOHTE13
+            </div>
+
+            <div class="social-links">
+
+                <a class="social-btn"
+                   href="https://www.twitch.tv/sohte13"
+                   target="_blank" rel="noopener noreferrer">TWITCH</a>
+
+                <a class="social-btn"
+                   href="https://t.me/internetsherif333"
+                   target="_blank" rel="noopener noreferrer">TELEGRAM</a>
+
+                <a class="social-btn"
+                   href="https://www.youtube.com/@kuwe1ck"
+                   target="_blank" rel="noopener noreferrer">YOUTUBE</a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ADMIN PANEL -->
+
+<section id="administration" class="hidden">
+
+<div class="admin-panel" id="adminPanel">
+    <button type="button" id="closeAdminPanel" class="admin-trigger" style="float:right">ЗАКРЫТЬ ✕</button>
+
+    <div id="adminLogin">
+        <h3>ВХОД В ECO FAMQ</h3>
+
+        <form class="admin-form" id="loginForm">
+            <input
+                type="email"
+                name="email"
+                placeholder="Email администратора"
+                required
+            >
+
+            <input
+                type="password"
+                name="password"
+                placeholder="Пароль"
+                required
+            >
+
+            <button type="submit">ВОЙТИ</button>
+        </form>
+
+        <p id="loginMessage" class="admin-note">
+            Войди под своим аккаунтом администратора.
+        </p>
+    </div>
+
+    <div id="adminContent" hidden>
+
+        <p class="admin-note" id="adminWelcome">
+            Ты вошёл в панель управления ECO FAMQ.
+        </p>
+
+        <button type="button" id="logoutButton">
+            ВЫЙТИ ИЗ АККАУНТА
+        </button>
+
+
+        <h3>РЕДАКТОР ВСЕГО САЙТА</h3>
+        <p class="admin-note">Здесь меняются заголовки, тексты, ссылки, статистика, достижения и блоки медиа. Изменения сохраняются в Supabase и видны всем посетителям.</p>
+        <form id="siteContentForm" class="admin-form">
+          <div class="cms-grid">
+            <label class="cms-field">Главный заголовок<input name="heroTitle" maxlength="50"></label>
+            <label class="cms-field">Подзаголовок (две строки через |)<input name="heroSubtitle" maxlength="160"></label>
+            <label class="cms-field">Заголовок статистики<input name="statsTitle" maxlength="80"></label>
+            <label class="cms-field">Побед в статистике<input name="statWins" maxlength="20"></label>
+            <label class="cms-field">Призовые в статистике<input name="statPrize" maxlength="20"></label>
+            <label class="cms-field">Заголовок состава<input name="membersTitle" maxlength="80"></label>
+            <label class="cms-field">Заголовок таблицы лидеров<input name="leadersTitle" maxlength="80"></label>
+            <label class="cms-field">Заголовок достижений<input name="achievementsTitle" maxlength="80"></label>
+            <label class="cms-field">Заголовок галереи<input name="galleryTitle" maxlength="80"></label>
+            <label class="cms-field">Заголовок новостей<input name="newsTitle" maxlength="80"></label>
+            <label class="cms-field">Заголовок медиа<input name="mediaTitle" maxlength="80"></label>
+            <label class="cms-field">Заголовок вступления<input name="recruitmentTitle" maxlength="80"></label>
+            <label class="cms-field">Текст вступления<textarea name="recruitmentText" maxlength="500"></textarea></label>
+            <label class="cms-field">Ссылка заявки / Discord<input name="recruitmentUrl" type="url"></label>
+            <label class="cms-field">Подпись кнопки вступления<input name="recruitmentButton" maxlength="40"></label>
+          </div>
+          <label class="cms-field">Достижения — JSON-массив (поля: date, title, prize, image)
+            <textarea name="achievementsJson" spellcheck="false"></textarea>
+          </label>
+          <label class="cms-field">Галерея — JSON-массив (поля: image_url, caption)
+            <textarea name="galleryJson" spellcheck="false"></textarea>
+          </label>
+          <label class="cms-field">Медиа — JSON-массив (поля: name, links; links — массив {label,url})
+            <textarea name="mediaJson" spellcheck="false"></textarea>
+          </label>
+          <button type="submit">СОХРАНИТЬ ИЗМЕНЕНИЯ САЙТА</button>
+          <p id="siteContentMessage" class="admin-note" aria-live="polite"></p>
+        </form>
+
+        <h3>ДОБАВИТЬ УЧАСТНИКА</h3>
+
+        <form class="admin-form" id="memberForm">
+            <input name="name" placeholder="Игровой ник" required maxlength="35">
+            <input name="role" placeholder="Должность / ранг" required maxlength="40">
+            <input name="wins" type="number" min="0" max="9999" placeholder="Количество побед" value="0">
+            <input name="avatar" type="url" placeholder="Ссылка на аватарку (необязательно)">
+            <button type="submit">ДОБАВИТЬ УЧАСТНИКА</button>
+        </form>
+
+        <h3>УЧАСТНИКИ</h3>
+        <div class="admin-list" id="adminMembers"></div>
+
+        <h3>ДОБАВИТЬ НОВОСТЬ</h3>
+
+        <form class="admin-form" id="newsForm">
+            <input name="title" placeholder="Заголовок новости" required maxlength="80">
+            <textarea name="text" placeholder="Текст новости" required maxlength="1000"></textarea>
+            <button type="submit">ОПУБЛИКОВАТЬ НОВОСТЬ</button>
+        </form>
+
+        <h3>УПРАВЛЕНИЕ НОВОСТЯМИ</h3>
+        <div class="admin-list" id="adminNews"></div>
+
+        <h3>ДОБАВИТЬ ФОТО В ГАЛЕРЕЮ</h3>
+
+        <form class="admin-form" id="galleryForm">
+            <input name="url" type="url" placeholder="Прямая ссылка на изображение" required>
+            <input name="caption" placeholder="Подпись к фотографии" required maxlength="80">
+            <button type="submit">ДОБАВИТЬ ФОТО</button>
+        </form>
+
+        <h3>ФОТОГРАФИИ ГАЛЕРЕИ</h3>
+        <div class="admin-list" id="adminGallery"></div>
+
+    </div>
+</div>
+</section>
+</div>
+
+
+</section>
+
+</div>
+
+
+<!-- FOOTER -->
+
+<footer>
+    © 2026 ECO FAMQ<br>
+    DEAD INSIDE STYLE | RADMIR GTA 5 RP
+</footer>
+
+
+<!-- MUSIC PLAYER -->
+
+<audio id="bgMusic" loop preload="none">
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="music-player">
+
+    <button id="musicButton" aria-label="Включить музыку">♪</button>
+
+    <div class="volume-panel">
+        <span>VOL</span>
+        <input type="range" id="volumeSlider"
+               min="0" max="100" value="25"
+               aria-label="Громкость">
+        <span id="volumeValue">25%</span>
+    </div>
+
+</div>
+
+
+<script>
+
+/* SUPABASE CONFIG */
+
+const SUPABASE_URL = 'https://mdazrcskzwupolkzmnkv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_LFrfTFCATa88qEiu3PSPWg_dFu-q7TV';
+
+let db = null;
+let currentUser = null;
+let currentRole = null;
+
+let data = {
+    members: [],
+    news: [],
+    gallery: [],
+    siteContent: null
+};
+
+
+/* LOADER */
+
+window.addEventListener('load', () => {
+    const loader = document.getElementById('loader');
+    if (loader) setTimeout(() => loader.classList.add('hide'), 700);
+});
+
+setTimeout(() => {
+    const loader = document.getElementById('loader');
+    if (loader) loader.classList.add('hide');
+}, 4000);
+
+
+/* MOBILE MENU */
+
+const menuToggle = document.getElementById('menuToggle');
+const navLinks = document.getElementById('navLinks');
+
+if (menuToggle && navLinks) {
+    menuToggle.addEventListener('click', () => {
+        const opened = navLinks.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', String(opened));
+    });
+
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('open');
+            menuToggle.setAttribute('aria-expanded', 'false');
+        });
+    });
+}
+
+
+/* SCROLL ANIMATION */
+
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+            observer.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
+
+
+/* HELPERS */
+
+function safeText(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    })[char]);
+}
+
+function validImageUrl(value) {
+    try {
+        const url = new URL(value);
+        return ['https:', 'http:'].includes(url.protocol) ? url.href : '';
+    } catch {
+        return '';
+    }
+}
+
+function showMessage(element, message) {
+    if (element) element.textContent = message;
+}
+
+function formatDate(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime())
+        ? ''
+        : date.toLocaleDateString('ru-RU');
+}
+
+
+
+/* SITE CONTENT / MINI CMS */
+const defaultSiteContent = {
+    heroTitle: 'ECO FAMQ',
+    heroSubtitle: 'ЕДИНСТВО. ЧЕСТЬ. ПОБЕДА.|МЫ ПИШЕМ ИСТОРИЮ.',
+    statsTitle: 'СТАТИСТИКА СЕМЬИ',
+    statWins: '2',
+    statPrize: '85K',
+    membersTitle: 'СОСТАВ СЕМЬИ',
+    leadersTitle: 'ТАБЛИЦА ЛИДЕРОВ',
+    achievementsTitle: 'НАШИ ДОСТИЖЕНИЯ',
+    galleryTitle: 'ГАЛЕРЕЯ ПОБЕД',
+    newsTitle: 'НОВОСТИ СЕМЬИ',
+    mediaTitle: 'МЕДИА И СОЦСЕТИ',
+    recruitmentTitle: 'ВСТУПИТЬ В СЕМЬЮ',
+    recruitmentText: 'Хочешь стать частью нашей истории?\\nПрисоединяйся к ECO FAMQ и побеждай вместе с нами.',
+    recruitmentUrl: 'https://discord.gg/8NdkeCbK5Z',
+    recruitmentButton: 'ПОДАТЬ ЗАЯВКУ',
+    achievements: [
+      {date:'14.03.2026',title:'ПОБЕДИТЕЛИ RADMIR CAP S1',prize:'🏆 1 МЕСТО | 25.000Р',image:'1.png'},
+      {date:'19.04.2026',title:'ТУРНИР МОЙ ДОМ',prize:'🏆 3 МЕСТО | 10.000Р',image:'2.png'},
+      {date:'02.05.2026',title:'ПОБЕДИТЕЛИ ЗА ГОЛЬФ КЛУБ S1',prize:'🏆 50.000Р',image:'3.png'}
+    ],
+    gallery: [
+      {image_url:'1.png',caption:'RADМIR CAP S1 • 1 МЕСТО'},
+      {image_url:'2.png',caption:'МОЙ ДОМ • 3 МЕСТО'},
+      {image_url:'3.png',caption:'ГОЛЬФ КЛУБ S1 • ПОБЕДА'}
+    ],
+    media: [
+      {name:'KERTY66',links:[{label:'TWITCH',url:'https://www.twitch.tv/kerty66'},{label:'YOUTUBE',url:'https://www.youtube.com/@kerty_66'},{label:'TIKTOK',url:'https://www.tiktok.com/@kerty660'}]},
+      {name:'SOHTE13',links:[{label:'TWITCH',url:'https://www.twitch.tv/sohte13'},{label:'TELEGRAM',url:'https://t.me/internetsherif333'},{label:'YOUTUBE',url:'https://www.youtube.com/@kuwe1ck'}]}
+    ]
+};
+
+applySiteContent(defaultSiteContent);
+
+function applySiteContent(content) {
+    const c = {...defaultSiteContent, ...(content || {})};
+    data.siteContent = c;
+    const setText = (id, value) => { const el=document.getElementById(id); if(el) el.textContent=String(value ?? ''); };
+    setText('heroTitle', c.heroTitle);
+    const subtitle=document.getElementById('heroSubtitle');
+    if(subtitle) subtitle.innerHTML=String(c.heroSubtitle || '').split('|').map(s=>safeText(s)).join('<br>');
+    ['statsTitle','membersTitle','leadersTitle','achievementsTitle','galleryTitle','newsTitle','mediaTitle','recruitmentTitle'].forEach(id=>setText(id,c[id]));
+    setText('statWins', c.statWins);
+    setText('statPrize', c.statPrize);
+    setText('recruitmentText', c.recruitmentText);
+    const link=document.getElementById('recruitmentLink');
+    if(link) { link.href=validImageUrl(c.recruitmentUrl) || '#'; link.textContent=c.recruitmentButton || 'ПОДАТЬ ЗАЯВКУ'; }
+    const achGrid=document.getElementById('achievementsGrid');
+    if(achGrid && Array.isArray(c.achievements)) {
+      achGrid.innerHTML='';
+      c.achievements.forEach(item=>{
+        const card=document.createElement('div'); card.className='card';
+        const wrap=document.createElement('div'); wrap.className='image-wrap';
+        const img=document.createElement('img'); img.className='achievement-image';
+        img.src=validImageUrl(item.image) || (String(item.image||'').match(/^[\w./-]+$/) ? item.image : '');
+        img.alt=item.title || 'Достижение ECO FAMQ';
+        const info=document.createElement('div'); info.className='achievement-info';
+        const date=document.createElement('div'); date.className='achievement-date'; date.textContent=item.date||'';
+        const title=document.createElement('div'); title.className='achievement-title'; title.textContent=item.title||'';
+        const prize=document.createElement('div'); prize.className='achievement-prize'; prize.textContent=item.prize||'';
+        wrap.appendChild(img); info.append(date,title,prize); card.append(wrap,info); achGrid.appendChild(card);
+      });
+    }
+
+    const galleryGrid=document.getElementById('galleryGrid');
+    if(galleryGrid && Array.isArray(c.gallery)) {
+      galleryGrid.querySelectorAll('[data-site-gallery]').forEach(el=>el.remove());
+      c.gallery.forEach(item=>{
+        const url=validImageUrl(item.image_url); if(!url) return;
+        const card=document.createElement('div'); card.className='card gallery-card'; card.dataset.siteGallery='true';
+        const img=document.createElement('img'); img.src=url; img.alt=item.caption||'ECO FAMQ';
+        const caption=document.createElement('div'); caption.className='gallery-caption'; caption.textContent=item.caption||'';
+        card.append(img,caption); galleryGrid.appendChild(card);
+      });
+    }
+    const mediaSection=document.querySelector('#media .card');
+    if(mediaSection && Array.isArray(c.media)) {
+      mediaSection.innerHTML='';
+      c.media.forEach(person=>{
+        const creator=document.createElement('div'); creator.className='creator';
+        const name=document.createElement('div'); name.className='creator-name';
+        const span=document.createElement('span'); span.textContent='MEDIA // ';
+        name.append(span,document.createTextNode(person.name||''));
+        const links=document.createElement('div'); links.className='social-links';
+        (Array.isArray(person.links)?person.links:[]).forEach(item=>{
+          const url=validImageUrl(item.url); if(!url) return;
+          const a=document.createElement('a'); a.className='social-btn'; a.href=url; a.target='_blank'; a.rel='noopener noreferrer'; a.textContent=item.label||'LINK'; links.appendChild(a);
+        });
+        creator.append(name,links); mediaSection.appendChild(creator);
+      });
+    }
+    const form=document.getElementById('siteContentForm');
+    if(form) {
+      Object.keys(defaultSiteContent).forEach(key=>{
+        const field=form.elements[key];
+        if(!field) return;
+        if(key==='achievements') field.value=JSON.stringify(c.achievements,null,2);
+        else if(key==='media') field.value=JSON.stringify(c.media,null,2);
+        else if(key==='achievementsJson') field.value=JSON.stringify(c.achievements,null,2);
+        else if(key==='mediaJson') field.value=JSON.stringify(c.media,null,2);
+        else if(field.type!=='submit') field.value=String(c[key] ?? '');
+      });
+      form.elements.achievementsJson.value=JSON.stringify(c.achievements,null,2);
+      form.elements.mediaJson.value=JSON.stringify(c.media,null,2);
+      form.elements.galleryJson.value=JSON.stringify(c.gallery,null,2);
+    }
+}
+async function loadSiteContent() {
+    if(!db) return;
+    const {data: row,error}=await db.from('site_content').select('value').eq('key','main').maybeSingle();
+    if(error) { console.error('Site content:',error); applySiteContent(defaultSiteContent); return; }
+    applySiteContent(row?.value || defaultSiteContent);
+}
+const siteContentForm=document.getElementById('siteContentForm');
+if(siteContentForm) siteContentForm.addEventListener('submit',async event=>{
+    event.preventDefault();
+    if(!currentRole) return;
+    const f=siteContentForm.elements;
+    let achievements,media,gallery;
+    try {
+      achievements=JSON.parse(f.achievementsJson.value || '[]');
+      media=JSON.parse(f.mediaJson.value || '[]');
+      gallery=JSON.parse(f.galleryJson.value || '[]');
+      if(!Array.isArray(achievements)||!Array.isArray(media)||!Array.isArray(gallery)) throw new Error('Поля достижений, галереи и медиа должны быть JSON-массивами.');
+    } catch(error) {
+      showMessage(document.getElementById('siteContentMessage'),'Ошибка JSON: '+error.message);
+      return;
+    }
+    const value={
+      heroTitle:f.heroTitle.value.trim(), heroSubtitle:f.heroSubtitle.value.trim(),
+      statsTitle:f.statsTitle.value.trim(), statWins:f.statWins.value.trim(), statPrize:f.statPrize.value.trim(),
+      membersTitle:f.membersTitle.value.trim(), leadersTitle:f.leadersTitle.value.trim(),
+      achievementsTitle:f.achievementsTitle.value.trim(), galleryTitle:f.galleryTitle.value.trim(),
+      newsTitle:f.newsTitle.value.trim(), mediaTitle:f.mediaTitle.value.trim(),
+      recruitmentTitle:f.recruitmentTitle.value.trim(), recruitmentText:f.recruitmentText.value.trim(),
+      recruitmentUrl:f.recruitmentUrl.value.trim(), recruitmentButton:f.recruitmentButton.value.trim(),
+      achievements,gallery,media
+    };
+    const {error}=await db.from('site_content').upsert({key:'main',value,updated_at:new Date().toISOString()},{onConflict:'key'});
+    if(error) { console.error(error); showMessage(document.getElementById('siteContentMessage'),'Не удалось сохранить. Проверь SQL-политики.'); return; }
+    applySiteContent(value);
+    showMessage(document.getElementById('siteContentMessage'),'Изменения сохранены и опубликованы.');
+});
+
+/* RENDER MEMBERS */
+
+function renderMembers() {
+    const grid = document.getElementById('membersGrid');
+    const admin = document.getElementById('adminMembers');
+
+    if (!grid || !admin) return;
+
+    grid.innerHTML = '';
+    admin.innerHTML = '';
+
+    if (!data.members.length) {
+        grid.innerHTML = '<div class="empty-state">СОСТАВ ПОКА НЕ ДОБАВЛЕН<br>Участники появятся здесь после добавления через админ-панель.</div>';
+        admin.innerHTML = '<div class="empty-state">Участников пока нет.</div>';
+    }
+
+    data.members.forEach(member => {
+        const name = safeText(member.name);
+        const role = safeText(member.role);
+        const avatar = validImageUrl(member.avatar || '');
+        const wins = Math.max(0, Number(member.wins) || 0);
+
+        const card = document.createElement('div');
+        card.className = 'card member-card';
+
+        card.innerHTML = `
+            <div class="avatar">
+                ${avatar
+                    ? `<img src="${safeText(avatar)}" alt="">`
+                    : safeText((member.name || '?').slice(0, 2).toUpperCase())}
+            </div>
+            <div class="member-name">${name}</div>
+            <div class="member-role">${role}</div>
+            <div class="member-wins">🏆 ПОБЕД: ${wins}</div>
+        `;
+
+        grid.appendChild(card);
+
+        const row = document.createElement('div');
+        row.className = 'admin-item';
+        row.innerHTML = `
+            <span>${name} — ${role}</span>
+            <div class="admin-actions">
+              <button class="edit-btn" data-edit-member="${safeText(member.id)}">ИЗМЕНИТЬ</button>
+              <button class="delete-btn" data-delete-member="${safeText(member.id)}">УДАЛИТЬ</button>
+            </div>
+        `;
+        admin.appendChild(row);
+    });
+
+    const stat = document.getElementById('statMembers');
+    if (stat) stat.textContent = data.members.length;
+}
+
+
+/* RENDER LEADERBOARD */
+
+function renderLeaderboard() {
+    const body = document.getElementById('leaderboard');
+    if (!body) return;
+
+    body.innerHTML = '';
+
+    const sorted = [...data.members].sort(
+        (a, b) => (Number(b.wins) || 0) - (Number(a.wins) || 0)
+    );
+
+    if (!sorted.length) {
+        body.innerHTML = '<tr><td colspan="4">Добавьте участников через админ-панель.</td></tr>';
+        return;
+    }
+
+    sorted.forEach((member, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>#${index + 1}</td>
+            <td>${safeText(member.name)}</td>
+            <td>${safeText(member.role)}</td>
+            <td>${Math.max(0, Number(member.wins) || 0)}</td>
+        `;
+        body.appendChild(tr);
+    });
+}
+
+
+/* RENDER NEWS */
+
+function renderNews() {
+    const list = document.getElementById('newsList');
+    const admin = document.getElementById('adminNews');
+
+    if (!list || !admin) return;
+
+    list.innerHTML = '';
+    admin.innerHTML = '';
+
+    if (!data.news.length) {
+        list.innerHTML = '<div class="empty-state">ПОКА НЕТ НОВОСТЕЙ<br>Следите за обновлениями ECO FAMQ.</div>';
+        admin.innerHTML = '<div class="empty-state">Новостей пока нет.</div>';
+    }
+
+    data.news.forEach(item => {
+        const card = document.createElement('article');
+        card.className = 'card news-card';
+        card.innerHTML = `
+            <div class="news-date">${safeText(formatDate(item.created_at))}</div>
+            <div class="news-title">${safeText(item.title)}</div>
+            <div class="news-text">${safeText(item.body)}</div>
+        `;
+        list.appendChild(card);
+
+        const row = document.createElement('div');
+        row.className = 'admin-item';
+        row.innerHTML = `
+            <span>${safeText(item.title)}</span>
+            <div class="admin-actions">
+              <button class="edit-btn" data-edit-news="${safeText(item.id)}">ИЗМЕНИТЬ</button>
+              <button class="delete-btn" data-delete-news="${safeText(item.id)}">УДАЛИТЬ</button>
+            </div>
+        `;
+        admin.appendChild(row);
+    });
+
+    const stat = document.getElementById('statNews');
+    if (stat) stat.textContent = data.news.length;
+}
+
+
+/* RENDER GALLERY */
+
+function renderGallery() {
+    const grid = document.getElementById('galleryGrid');
+    const admin = document.getElementById('adminGallery');
+
+    if (!grid || !admin) return;
+
+    grid.querySelectorAll('[data-custom-gallery]').forEach(el => el.remove());
+    admin.innerHTML = '';
+
+    data.gallery.forEach(item => {
+        const url = validImageUrl(item.image_url);
+        if (!url) return;
+
+        const card = document.createElement('div');
+        card.className = 'card gallery-card';
+        card.dataset.customGallery = 'true';
+
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = item.caption || 'ECO FAMQ';
+
+        const caption = document.createElement('div');
+        caption.className = 'gallery-caption';
+        caption.textContent = item.caption || '';
+
+        card.append(img, caption);
+        grid.appendChild(card);
+
+        const row = document.createElement('div');
+        row.className = 'admin-item';
+        row.innerHTML = `
+            <span>${safeText(item.caption)}</span>
+            <div class="admin-actions">
+              <button class="edit-btn" data-edit-gallery="${safeText(item.id)}">ИЗМЕНИТЬ</button>
+              <button class="delete-btn" data-delete-gallery="${safeText(item.id)}">УДАЛИТЬ</button>
+            </div>
+        `;
+        admin.appendChild(row);
+    });
+
+    if (!data.gallery.length) {
+        admin.innerHTML = '<div class="empty-state">Дополнительных фотографий пока нет.</div>';
+    }
+}
+
+
+/* RENDER EVERYTHING */
+
+function renderAll() {
+    renderMembers();
+    renderLeaderboard();
+    renderNews();
+    renderGallery();
+}
+
+
+/* LOAD DATA FROM SUPABASE */
+
+async function loadData() {
+    if (!db) return;
+
+    const [membersResult, newsResult, galleryResult] = await Promise.all([
+        db.from('family_members').select('*').order('created_at', { ascending: false }),
+        db.from('family_news').select('*').order('created_at', { ascending: false }),
+        db.from('family_gallery').select('*').order('created_at', { ascending: false })
+    ]);
+    await loadSiteContent();
+
+    if (membersResult.error) console.error('Members:', membersResult.error);
+    if (newsResult.error) console.error('News:', newsResult.error);
+    if (galleryResult.error) console.error('Gallery:', galleryResult.error);
+
+    if (membersResult.error || newsResult.error || galleryResult.error) {
+        console.error('Не удалось загрузить некоторые данные из Supabase.');
+        return;
+    }
+
+    data.members = membersResult.data || [];
+    data.news = newsResult.data || [];
+    data.gallery = galleryResult.data || [];
+
+    renderAll();
+}
+
+
+/* ADMIN PANEL OPEN / CLOSE */
+
+const adminPanel = document.getElementById('adminPanel');
+
+const accountButton = document.getElementById('accountButton');
+const closeAdminPanel = document.getElementById('closeAdminPanel');
+
+function toggleAdminPanel(force) {
+    if (!adminPanel) return;
+    const opened = typeof force === 'boolean' ? force : !adminPanel.classList.contains('open');
+    adminPanel.classList.toggle('open', opened);
+    if (accountButton) accountButton.textContent = opened ? 'ПАНЕЛЬ ОТКРЫТА' : (currentUser ? 'АККАУНТ' : 'ВХОД');
+    document.body.style.overflow = opened ? 'hidden' : '';
+}
+if (accountButton) accountButton.addEventListener('click', () => toggleAdminPanel());
+if (closeAdminPanel) closeAdminPanel.addEventListener('click', () => toggleAdminPanel(false));
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') toggleAdminPanel(false);
+});
+
+
+
+/* AUTH ELEMENTS */
+
+const loginForm = document.getElementById('loginForm');
+const loginMessage = document.getElementById('loginMessage');
+const adminLogin = document.getElementById('adminLogin');
+const adminContent = document.getElementById('adminContent');
+const adminWelcome = document.getElementById('adminWelcome');
+const logoutButton = document.getElementById('logoutButton');
+
+
+/* CHECK ADMIN PERMISSIONS */
+
+async function checkAccess(user) {
+    currentUser = user;
+    currentRole = null;
+
+    // Загружаем публичные данные для всех посетителей
+    await loadData();
+
+    if (!user) {
+        if (adminLogin) adminLogin.hidden = false;
+        if (adminContent) adminContent.hidden = true;
+        showMessage(loginMessage, '');
+        return;
+    }
+
+    const { data: admin, error } = await db
+        .from('site_admins')
+        .select('role')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+    if (error) {
+        console.error('Admin check error:', error);
+        showMessage(loginMessage, 'Не удалось проверить права доступа.');
+        if (adminLogin) adminLogin.hidden = false;
+        if (adminContent) adminContent.hidden = true;
+        return;
+    }
+
+    if (!admin || !['owner', 'admin'].includes(admin.role)) {
+        showMessage(loginMessage, 'У этой учётной записи нет прав администратора.');
+        if (adminLogin) adminLogin.hidden = false;
+        if (adminContent) adminContent.hidden = true;
+        return;
+    }
+
+    currentRole = admin.role;
+    if (accountButton) accountButton.textContent = 'АККАУНТ';
+
+    if (adminLogin) adminLogin.hidden = true;
+    if (adminContent) adminContent.hidden = false;
+
+    if (adminWelcome) {
+        adminWelcome.textContent = `Вы вошли как ${user.email} (${currentRole})`;
+    }
+
+    showMessage(loginMessage, '');
+}
+
+
+/* LOGIN */
+
+if (loginForm) {
+    loginForm.addEventListener('submit', async event => {
+        event.preventDefault();
+
+        if (!db) {
+            showMessage(loginMessage, 'Подключение к серверу ещё не готово.');
+            return;
+        }
+
+        const values = new FormData(loginForm);
+        const email = String(values.get('email') || '').trim();
+        const password = String(values.get('password') || '');
+
+        if (!email || !password) {
+            showMessage(loginMessage, 'Заполни email и пароль.');
+            return;
+        }
+
+        showMessage(loginMessage, 'Выполняется вход...');
+
+        const { data: result, error } = await db.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (error) {
+            showMessage(loginMessage, 'Не удалось войти. Проверь email и пароль.');
+            console.error('Login error:', error);
+            return;
+        }
+
+        await checkAccess(result.user);
+        loginForm.reset();
+    });
+}
+
+
+/* LOGOUT */
+
+if (logoutButton) {
+    logoutButton.addEventListener('click', async () => {
+        if (!db) return;
+
+        const { error } = await db.auth.signOut();
+
+        if (error) {
+            alert('Не удалось выйти из аккаунта.');
+            console.error(error);
+            return;
+        }
+
+        currentUser = null;
+        currentRole = null;
+        if (accountButton) accountButton.textContent = 'ВХОД';
+
+        if (adminLogin) adminLogin.hidden = false;
+        if (adminContent) adminContent.hidden = true;
+
+        showMessage(loginMessage, 'Вы вышли из аккаунта.');
+    });
+}
+
+
+/* ADD MEMBER */
+
+const memberForm = document.getElementById('memberForm');
+
+if (memberForm) {
+    memberForm.addEventListener('submit', async event => {
+        event.preventDefault();
+
+        if (!currentRole) return;
+
+        const values = new FormData(memberForm);
+
+        const name = String(values.get('name') || '').trim();
+        const role = String(values.get('role') || '').trim();
+        const wins = Number(values.get('wins')) || 0;
+        const avatar = String(values.get('avatar') || '').trim();
+
+        if (!name || !role || wins < 0 || wins > 9999) return;
+
+        if (avatar && !validImageUrl(avatar)) {
+            alert('Укажи корректную ссылку на аватарку.');
+            return;
+        }
+
+        const { error } = await db.from('family_members').insert({
+            name,
+            role,
+            wins,
+            avatar
+        });
+
+        if (error) {
+            alert('Не удалось добавить участника.');
+            console.error(error);
+            return;
+        }
+
+        memberForm.reset();
+        await loadData();
+    });
+}
+
+
+/* ADD NEWS */
+
+const newsForm = document.getElementById('newsForm');
+
+if (newsForm) {
+    newsForm.addEventListener('submit', async event => {
+        event.preventDefault();
+
+        if (!currentRole) return;
+
+        const values = new FormData(newsForm);
+
+        const title = String(values.get('title') || '').trim();
+        const body = String(values.get('text') || '').trim();
+
+        if (!title || !body) return;
+
+        const { error } = await db.from('family_news').insert({
+            title,
+            body
+        });
+
+        if (error) {
+            alert('Не удалось добавить новость.');
+            console.error(error);
+            return;
+        }
+
+        newsForm.reset();
+        await loadData();
+    });
+}
+
+
+/* ADD GALLERY PHOTO */
+
+const galleryForm = document.getElementById('galleryForm');
+
+if (galleryForm) {
+    galleryForm.addEventListener('submit', async event => {
+        event.preventDefault();
+
+        if (!currentRole) return;
+
+        const values = new FormData(galleryForm);
+
+        const image_url = validImageUrl(
+            String(values.get('url') || '').trim()
+        );
+
+        const caption = String(values.get('caption') || '').trim();
+
+        if (!image_url || !caption) {
+            alert('Проверь ссылку и подпись.');
+            return;
+        }
+
+        const { error } = await db.from('family_gallery').insert({
+            image_url,
+            caption
+        });
+
+        if (error) {
+            alert('Не удалось добавить фотографию.');
+            console.error(error);
+            return;
+        }
+
+        galleryForm.reset();
+        await loadData();
+    });
+}
+
+
+/* DELETE ITEMS */
+
+if (adminPanel) {
+    adminPanel.addEventListener('click', async event => {
+        const button = event.target.closest('button');
+        if (!button || !currentRole) return;
+
+        let table = null;
+        let id = null;
+        let question = '';
+
+        if (button.dataset.deleteMember) {
+            table = 'family_members';
+            id = button.dataset.deleteMember;
+            question = 'Удалить этого участника?';
+        } else if (button.dataset.deleteNews) {
+            table = 'family_news';
+            id = button.dataset.deleteNews;
+            question = 'Удалить эту новость?';
+        } else if (button.dataset.deleteGallery) {
+            table = 'family_gallery';
+            id = button.dataset.deleteGallery;
+            question = 'Удалить эту фотографию?';
+        }
+
+
+        const editMemberId=button.dataset.editMember;
+        const editNewsId=button.dataset.editNews;
+        const editGalleryId=button.dataset.editGallery;
+        if(editMemberId) {
+          const item=data.members.find(x=>x.id===editMemberId); if(!item) return;
+          const name=prompt('Игровой ник:',item.name); if(name===null) return;
+          const role=prompt('Должность / ранг:',item.role); if(role===null) return;
+          const wins=Number(prompt('Количество побед:',item.wins) ?? item.wins);
+          const avatar=prompt('Ссылка на аватар (можно пусто):',item.avatar||''); if(avatar===null) return;
+          const {error}=await db.from('family_members').update({name:name.trim(),role:role.trim(),wins,avatar:avatar.trim()}).eq('id',editMemberId);
+          if(error) { alert('Не удалось изменить участника.'); console.error(error); return; }
+          await loadData(); return;
+        }
+        if(editNewsId) {
+          const item=data.news.find(x=>x.id===editNewsId); if(!item) return;
+          const title=prompt('Заголовок новости:',item.title); if(title===null) return;
+          const body=prompt('Текст новости:',item.body); if(body===null) return;
+          const {error}=await db.from('family_news').update({title:title.trim(),body:body.trim()}).eq('id',editNewsId);
+          if(error) { alert('Не удалось изменить новость.'); console.error(error); return; }
+          await loadData(); return;
+        }
+        if(editGalleryId) {
+          const item=data.gallery.find(x=>x.id===editGalleryId); if(!item) return;
+          const image_url=prompt('Ссылка на изображение:',item.image_url); if(image_url===null) return;
+          const caption=prompt('Подпись:',item.caption); if(caption===null) return;
+          if(!validImageUrl(image_url)) { alert('Некорректная ссылка.'); return; }
+          const {error}=await db.from('family_gallery').update({image_url:validImageUrl(image_url),caption:caption.trim()}).eq('id',editGalleryId);
+          if(error) { alert('Не удалось изменить фото.'); console.error(error); return; }
+          await loadData(); return;
+        }
+
+        if (!table || !id || !confirm(question)) return;
+
+        const { error } = await db
+            .from(table)
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            alert('Не удалось удалить запись.');
+            console.error(error);
+            return;
+        }
+
+        await loadData();
+    });
+}
+
+
+/* MUSIC */
+
+const music = document.getElementById('bgMusic');
+const musicButton = document.getElementById('musicButton');
+const slider = document.getElementById('volumeSlider');
+const volumeValue = document.getElementById('volumeValue');
+
+if (music && musicButton) {
+    music.volume = 0.25;
+
+    musicButton.addEventListener('click', async () => {
+        if (music.paused) {
+            try {
+                await music.play();
+                musicButton.classList.add('playing');
+                musicButton.textContent = 'Ⅱ';
+            } catch (error) {
+                alert('Не удалось загрузить музыку. Проверь наличие music.mp3.');
+            }
+        } else {
+            music.pause();
+            musicButton.classList.remove('playing');
+            musicButton.textContent = '♪';
+        }
+    });
+}
+
+if (music && slider && volumeValue) {
+    slider.addEventListener('input', () => {
+        music.volume = Number(slider.value) / 100;
+        volumeValue.textContent = slider.value + '%';
+    });
+}
+
+
+/* START SUPABASE */
+
+async function startSupabase() {
+    try {
+        const response = await fetch(
+            'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'
+        );
+
+        if (!response.ok) throw new Error('Не удалось загрузить библиотеку Supabase.');
+
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+        script.onload = async () => {
+            try {
+                db = window.supabase.createClient(
+                    SUPABASE_URL,
+                    SUPABASE_KEY
+                );
+
+                const { data: sessionData, error } = await db.auth.getSession();
+
+                if (error) throw error;
+
+                await checkAccess(sessionData.session?.user || null);
+
+                db.auth.onAuthStateChange((event, session) => {
+                    if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+                        setTimeout(() => {
+                            checkAccess(session?.user || null);
+                        }, 0);
+                    }
+                });
+
+                /* ONLINE COUNTER */
+
+                const onlineCount = document.getElementById('onlineCount');
+
+                const channel = db.channel('eco-famq-online', {
+                    config: {
+                        presence: {
+                            key: crypto.randomUUID
+                                ? crypto.randomUUID()
+                                : String(Date.now())
+                        }
+                    }
+                });
+
+                channel
+                    .on('presence', { event: 'sync' }, () => {
+                        const state = channel.presenceState();
+
+                        const total = Object.values(state)
+                            .reduce((sum, users) => sum + users.length, 0);
+
+                        if (onlineCount) onlineCount.textContent = total;
+                    })
+                    .subscribe(async status => {
+                        if (status === 'SUBSCRIBED') {
+                            await channel.track({
+                                online_at: new Date().toISOString()
+                            });
+                        }
+                    });
+
+            } catch (error) {
+                console.error('Supabase error:', error);
+                showMessage(loginMessage, 'Ошибка подключения к Supabase.');
+            }
+        };
+
+        script.onerror = () => {
+            showMessage(loginMessage, 'Не удалось загрузить Supabase.');
+        };
+
+        document.head.appendChild(script);
+
+    } catch (error) {
+        console.error(error);
+        showMessage(loginMessage, 'Не удалось подключиться к серверу.');
+    }
+}
+
+startSupabase();
+
+</script>
+
+</body>
+</html>
