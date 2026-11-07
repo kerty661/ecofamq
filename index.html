@@ -4,757 +4,1350 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="theme-color" content="#050505">
 <title>ECO FAMQ | DEAD INSIDE</title>
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800&display=swap');
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+<style>
 :root {
-    --black: #050505;
-    --white: #ffffff;
-    --silver: #c8c8c8;
-    --gray: #777777;
-    --card: rgba(255,255,255,0.035);
+    --bg:#050505;
+    --card:#101010;
+    --white:#fff;
+    --silver:#aaa;
+    --border:rgba(255,255,255,.14);
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
 html {
-    scroll-behavior: smooth;
+    scroll-behavior:smooth;
+    scroll-padding-top:100px;
 }
 
 body {
-    background: var(--black);
-    color: white;
-    font-family: 'Montserrat', sans-serif;
-    overflow-x: hidden;
+    background:var(--bg);
+    color:white;
+    font-family:'Montserrat',sans-serif;
+    overflow-x:hidden;
 }
-
-/* BACKGROUND */
 
 body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: -1;
-
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    pointer-events:none;
     background:
-        radial-gradient(circle at 50% 0%, rgba(255,255,255,.12), transparent 35%),
-        radial-gradient(circle at 0% 70%, rgba(180,180,180,.07), transparent 30%),
-        radial-gradient(circle at 100% 90%, rgba(255,255,255,.08), transparent 35%);
-
-    animation: backgroundMove 9s ease-in-out infinite alternate;
+      radial-gradient(circle at 50% 0%,#292929 0,transparent 40%),
+      radial-gradient(circle at 0% 70%,#171717 0,transparent 35%),
+      radial-gradient(circle at 100% 80%,#1c1c1c 0,transparent 35%);
 }
 
-@keyframes backgroundMove {
-    from { filter: brightness(.7); }
-    to { filter: brightness(1.5); }
+body::after {
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:20;
+    pointer-events:none;
+    opacity:.025;
+    background:repeating-linear-gradient(
+      transparent 0 3px,
+      white 4px
+    );
 }
 
-/* MOVING LIGHT */
+button,input,textarea {
+    font:inherit;
+}
+
+button,a {
+    -webkit-tap-highlight-color:transparent;
+}
+
+a {
+    color:inherit;
+}
+
+/* LOADING SCREEN */
+
+#loader {
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    background:#050505;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    transition:opacity .8s,visibility .8s;
+}
+
+#loader.hide {
+    opacity:0;
+    visibility:hidden;
+}
+
+.loader-logo {
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(35px,9vw,75px);
+    font-weight:900;
+    letter-spacing:8px;
+    background:linear-gradient(100deg,#555,#fff,#777,#fff);
+    background-size:250%;
+    color:transparent;
+    background-clip:text;
+    animation:metal 2s linear infinite;
+}
+
+.loader-line {
+    width:180px;
+    height:2px;
+    background:#333;
+    margin-top:30px;
+    overflow:hidden;
+}
+
+.loader-line::after {
+    content:"";
+    display:block;
+    width:50%;
+    height:100%;
+    background:white;
+    animation:loading 1.3s infinite;
+}
+
+.loader-caption {
+    margin-top:15px;
+    font-size:10px;
+    letter-spacing:5px;
+    color:#777;
+}
+
+@keyframes loading {
+    from {transform:translateX(-100%)}
+    to {transform:translateX(200%)}
+}
+
+@keyframes metal {
+    to {background-position:250% center}
+}
+
+/* BACKGROUND LIGHT */
 
 .light {
-    position: fixed;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(255,255,255,.09), transparent 70%);
-    pointer-events: none;
-    z-index: -1;
-    top: 30%;
-    left: 50%;
-    transform: translateX(-50%);
-    animation: lightMove 8s ease-in-out infinite alternate;
+    position:fixed;
+    width:400px;
+    height:400px;
+    top:15%;
+    left:50%;
+    transform:translateX(-50%);
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%);
+    pointer-events:none;
+    z-index:-1;
+    animation:lightMove 8s ease-in-out infinite alternate;
 }
 
 @keyframes lightMove {
-    from { transform: translate(-70%, -20%); }
-    to { transform: translate(40%, 20%); }
+    to {transform:translate(30%,-10%)}
 }
 
-/* HEADER */
+/* NAVIGATION */
 
-header {
-    min-height: 480px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 80px 20px;
-    position: relative;
+.navbar {
+    position:sticky;
+    top:0;
+    z-index:100;
+    width:100%;
+    background:rgba(5,5,5,.85);
+    backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--border);
 }
 
-.logo-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(3rem, 10vw, 7rem);
-    font-weight: 900;
-    letter-spacing: 12px;
-
-    background: linear-gradient(
-        120deg,
-        #555,
-        #fff,
-        #888,
-        #fff,
-        #444,
-        #fff
-    );
-
-    background-size: 300% auto;
-    color: transparent;
-    background-clip: text;
-    -webkit-background-clip: text;
-
-    animation: silver 5s linear infinite, logoAppear 1.5s ease;
-    filter: drop-shadow(0 0 20px rgba(255,255,255,.25));
+.nav-inner {
+    max-width:1250px;
+    min-height:72px;
+    padding:12px 20px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
 }
 
-@keyframes silver {
-    to { background-position: 300% center; }
+.nav-logo {
+    font-family:'Orbitron',sans-serif;
+    font-weight:900;
+    font-size:20px;
+    letter-spacing:3px;
+    white-space:nowrap;
+    text-decoration:none;
+    background:linear-gradient(100deg,#777,#fff,#888);
+    background-clip:text;
+    color:transparent;
 }
 
-@keyframes logoAppear {
-    from {
-        opacity: 0;
-        transform: translateY(35px);
-        letter-spacing: 25px;
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.nav-links {
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    align-items:center;
 }
 
-.subtitle {
-    margin-top: 20px;
-    font-size: 13px;
-    letter-spacing: 5px;
-    color: #aaa;
-    text-transform: uppercase;
-    animation: fadeIn 2s ease;
+.nav-links a {
+    text-decoration:none;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    color:#999;
+    transition:.3s;
 }
 
-.header-line {
-    width: 120px;
-    height: 2px;
-    margin-top: 30px;
-    background: linear-gradient(90deg, transparent, white, transparent);
-    box-shadow: 0 0 15px white;
-    animation: linePulse 3s infinite;
+.nav-links a:hover {
+    color:white;
+    text-shadow:0 0 12px white;
 }
 
-@keyframes linePulse {
-    50% { width: 220px; opacity: .5; }
+.menu-toggle {
+    display:none;
+    background:none;
+    border:1px solid #555;
+    color:white;
+    border-radius:5px;
+    padding:8px 12px;
+    cursor:pointer;
 }
 
-/* CONTAINER */
+/* GENERAL */
 
 .container {
-    max-width: 1250px;
-    margin: auto;
-    padding: 20px;
+    max-width:1250px;
+    margin:auto;
+    padding:20px;
 }
 
 section {
-    margin-bottom: 100px;
+    margin:90px 0;
 }
 
-/* TITLES */
-
-h2 {
-    font-family: 'Orbitron', sans-serif;
-    text-align: center;
-    font-size: clamp(22px, 4vw, 34px);
-    letter-spacing: 5px;
-    margin-bottom: 40px;
-    color: white;
-    text-transform: uppercase;
+.section-title {
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(22px,4vw,34px);
+    text-align:center;
+    letter-spacing:4px;
+    margin-bottom:40px;
 }
 
-h2::after {
-    content: "";
-    display: block;
-    margin: 18px auto 0;
-    width: 90px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, white, transparent);
+.section-title::after {
+    content:"";
+    display:block;
+    width:90px;
+    height:2px;
+    background:linear-gradient(90deg,transparent,white,transparent);
+    margin:17px auto 0;
 }
 
-/* JOIN BOX */
+.muted {
+    color:#888;
+}
+
+.hidden {
+    opacity:0;
+    transform:translateY(35px);
+    transition:.8s;
+}
+
+.hidden.show {
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* HERO */
+
+.hero {
+    min-height:510px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    text-align:center;
+    padding:80px 15px;
+}
+
+.hero-title {
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(45px,11vw,105px);
+    font-weight:900;
+    letter-spacing:clamp(3px,2vw,13px);
+    background:linear-gradient(120deg,#555,#fff,#888,#fff,#444);
+    background-size:300%;
+    color:transparent;
+    background-clip:text;
+    animation:metal 6s linear infinite;
+    filter:drop-shadow(0 0 20px #ffffff35);
+}
+
+.hero-subtitle {
+    margin-top:22px;
+    color:#aaa;
+    font-size:12px;
+    letter-spacing:4px;
+    line-height:2;
+}
+
+.hero-line {
+    width:130px;
+    height:2px;
+    background:white;
+    box-shadow:0 0 15px white;
+    margin-top:30px;
+    animation:linePulse 3s infinite;
+}
+
+@keyframes linePulse {
+    50% {width:220px;opacity:.3}
+}
+
+/* ONLINE */
+
+.online-panel {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:15px;
+    width:max-content;
+    max-width:100%;
+    margin:0 auto 35px;
+    padding:15px 25px;
+    border:1px solid var(--border);
+    background:#ffffff08;
+    border-radius:8px;
+    backdrop-filter:blur(12px);
+}
+
+.online-dot {
+    width:9px;
+    height:9px;
+    background:white;
+    border-radius:50%;
+    box-shadow:0 0 15px white;
+    animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    50% {opacity:.25}
+}
+
+.online-label {
+    font-family:'Orbitron',sans-serif;
+    font-size:10px;
+    letter-spacing:2px;
+    color:#aaa;
+}
+
+.online-number {
+    font-family:'Orbitron',sans-serif;
+    font-size:23px;
+    font-weight:900;
+}
+
+/* CARDS */
+
+.card {
+    background:linear-gradient(135deg,#ffffff0d,#ffffff02);
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 12px 35px #0008;
+    transition:.4s;
+}
+
+.card:hover {
+    transform:translateY(-7px);
+    border-color:#ffffff75;
+    box-shadow:0 15px 40px #ffffff12;
+}
 
 .join-box {
-    position: relative;
-    padding: 55px 25px;
-    text-align: center;
-    border-radius: 15px;
-    background: linear-gradient(
-        135deg,
-        rgba(255,255,255,.09),
-        rgba(255,255,255,.015)
-    );
-
-    border: 1px solid rgba(255,255,255,.18);
-    box-shadow: 0 15px 60px rgba(0,0,0,.7);
-    overflow: hidden;
-    backdrop-filter: blur(15px);
+    text-align:center;
+    padding:45px 20px;
 }
 
-.join-box::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 60%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255,255,255,.09),
-        transparent
-    );
-    transform: skewX(-25deg);
-    animation: shine 6s infinite;
-}
-
-@keyframes shine {
-    100% { left: 150%; }
-}
-
-.join-box h3 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 26px;
-    margin-bottom: 20px;
+.join-box h2 {
+    font-family:'Orbitron',sans-serif;
+    font-size:25px;
+    margin-bottom:18px;
 }
 
 .join-box p {
-    color: #aaa;
-    margin-bottom: 30px;
-    line-height: 1.7;
+    color:#aaa;
+    line-height:1.8;
+    margin-bottom:25px;
 }
 
-/* BUTTONS */
-
-.btn-discord {
-    display: inline-block;
-    position: relative;
-    padding: 16px 40px;
-    color: black;
-    background: linear-gradient(120deg, #777, white, #aaa, white);
-    background-size: 200%;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 900;
-    letter-spacing: 2px;
-    transition: .4s;
-    box-shadow: 0 0 20px rgba(255,255,255,.15);
+.main-btn {
+    display:inline-block;
+    background:linear-gradient(120deg,#777,#fff,#aaa);
+    background-size:200%;
+    color:black;
+    padding:15px 32px;
+    border-radius:5px;
+    text-decoration:none;
+    font-weight:900;
+    letter-spacing:2px;
+    border:0;
+    cursor:pointer;
+    transition:.3s;
 }
 
-.btn-discord:hover {
-    background-position: right;
-    transform: translateY(-5px);
-    box-shadow: 0 0 35px rgba(255,255,255,.45);
+.main-btn:hover {
+    background-position:right;
+    transform:translateY(-3px);
+    box-shadow:0 0 25px #ffffff55;
 }
 
-/* ACHIEVEMENTS */
+/* STATISTICS */
 
-.achievements-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
+.stats-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
 }
 
-.achieve-card {
-    position: relative;
-    background: var(--card);
-    border: 1px solid rgba(255,255,255,.13);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: .5s;
-    box-shadow: 0 10px 35px rgba(0,0,0,.5);
+.stat-card {
+    text-align:center;
+    padding:28px 12px;
 }
 
-.achieve-card:hover {
-    transform: translateY(-10px) scale(1.015);
-    border-color: rgba(255,255,255,.65);
-    box-shadow: 0 15px 40px rgba(255,255,255,.12);
+.stat-number {
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(25px,5vw,38px);
+    font-weight:900;
+    color:white;
+    text-shadow:0 0 15px #ffffff50;
 }
 
-.achieve-img-container {
-    height: 210px;
-    overflow: hidden;
-    background: #111;
+.stat-label {
+    margin-top:12px;
+    color:#888;
+    font-size:10px;
+    letter-spacing:2px;
 }
 
-.achieve-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(100%) contrast(1.1);
-    transition: .7s;
+/* MEMBERS */
+
+.members-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
 }
 
-.achieve-card:hover .achieve-img {
-    transform: scale(1.08);
-    filter: grayscale(20%) contrast(1.1);
+.member-card {
+    padding:28px 15px;
+    text-align:center;
 }
 
-.achieve-info {
-    padding: 25px;
+.avatar {
+    width:100px;
+    height:100px;
+    margin:0 auto 18px;
+    border-radius:50%;
+    border:2px solid #aaa;
+    background:linear-gradient(135deg,#444,#090909);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    font-family:'Orbitron',sans-serif;
+    font-size:27px;
+    font-weight:900;
+    box-shadow:0 0 22px #ffffff20;
 }
 
-.achieve-date {
-    color: #888;
-    font-size: 12px;
-    letter-spacing: 3px;
-    margin-bottom: 12px;
-    font-weight: 700;
+.avatar img {
+    width:100%;
+    height:100%;
+    object-fit:cover;
 }
 
-.achieve-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    margin-bottom: 18px;
+.member-name {
+    font-family:'Orbitron',sans-serif;
+    font-size:15px;
+    margin-bottom:9px;
+    overflow-wrap:anywhere;
 }
 
-.achieve-prize {
-    color: white;
-    font-weight: 800;
-    font-size: 14px;
-    letter-spacing: 1px;
-    text-shadow: 0 0 12px rgba(255,255,255,.5);
+.member-role {
+    color:#999;
+    font-size:11px;
+    letter-spacing:2px;
+}
+
+.member-wins {
+    color:#ddd;
+    font-size:12px;
+    margin-top:15px;
+}
+
+/* LEADERBOARD */
+
+.table-wrap {
+    overflow-x:auto;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:#ffffff05;
+}
+
+table {
+    width:100%;
+    border-collapse:collapse;
+    min-width:480px;
+}
+
+th,td {
+    padding:18px 15px;
+    text-align:left;
+    border-bottom:1px solid #ffffff12;
+    font-size:13px;
+}
+
+th {
+    font-family:'Orbitron',sans-serif;
+    color:#888;
+    font-size:10px;
+    letter-spacing:1.5px;
+}
+
+td:first-child {
+    font-weight:900;
+    color:white;
+}
+
+tr:last-child td {
+    border-bottom:0;
+}
+
+/* ACHIEVEMENTS AND GALLERY */
+
+.achievements-grid,
+.gallery-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+    gap:22px;
+}
+
+.achievement-image {
+    width:100%;
+    height:205px;
+    object-fit:cover;
+    display:block;
+    filter:grayscale(100%);
+    transition:.6s;
+}
+
+.card:hover .achievement-image {
+    filter:grayscale(15%);
+    transform:scale(1.04);
+}
+
+.image-wrap {
+    overflow:hidden;
+    background:#111;
+}
+
+.achievement-info {
+    padding:23px;
+}
+
+.achievement-date {
+    font-size:11px;
+    letter-spacing:2px;
+    color:#888;
+    margin-bottom:12px;
+}
+
+.achievement-title {
+    font-family:'Orbitron',sans-serif;
+    font-size:14px;
+    line-height:1.7;
+    margin-bottom:14px;
+}
+
+.achievement-prize {
+    color:#ddd;
+    font-size:13px;
+    font-weight:800;
+}
+
+.gallery-card {
+    position:relative;
+    cursor:pointer;
+}
+
+.gallery-card img {
+    width:100%;
+    height:220px;
+    object-fit:cover;
+    filter:grayscale(100%);
+    transition:.5s;
+    display:block;
+}
+
+.gallery-card:hover img {
+    filter:grayscale(0%);
+    transform:scale(1.05);
+}
+
+.gallery-caption {
+    padding:15px;
+    font-size:12px;
+    color:#ccc;
+}
+
+/* NEWS */
+
+.news-list {
+    display:grid;
+    gap:18px;
+}
+
+.news-card {
+    padding:25px;
+}
+
+.news-date {
+    font-size:10px;
+    letter-spacing:2px;
+    color:#888;
+    margin-bottom:12px;
+}
+
+.news-title {
+    font-family:'Orbitron',sans-serif;
+    font-size:16px;
+    margin-bottom:12px;
+}
+
+.news-text {
+    font-size:13px;
+    line-height:1.8;
+    color:#aaa;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
 }
 
 /* MEDIA */
 
-.media-box {
-    padding: 35px 20px;
-    background: rgba(255,255,255,.025);
-    border: 1px solid rgba(255,255,255,.1);
-    border-radius: 12px;
-    text-align: center;
-}
-
-.media-username {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 21px;
-    margin-bottom: 25px;
-}
-
-.media-username span {
-    color: #ccc;
-    text-shadow: 0 0 15px white;
-}
-
-.social-links {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.social-btn {
-    display: inline-block;
-    min-width: 130px;
-    padding: 13px 25px;
-    color: white;
-    text-decoration: none;
-    background: linear-gradient(135deg, #222, #080808);
-    border: 1px solid #555;
-    border-radius: 5px;
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    transition: .3s;
-}
-
-.social-btn:hover {
-    background: white;
-    color: black;
-    border-color: white;
-    transform: translateY(-5px);
-    box-shadow: 0 0 25px rgba(255,255,255,.25);
-}
-
-/* CREATOR DIVIDER */
-
 .creator {
-    margin-bottom: 35px;
-}
-
-.creator:last-child {
-    margin-bottom: 0;
+    padding:30px 15px;
+    text-align:center;
 }
 
 .creator + .creator {
-    border-top: 1px solid rgba(255,255,255,.12);
-    padding-top: 35px;
+    border-top:1px solid var(--border);
 }
 
 .creator-name {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 22px;
-    margin-bottom: 25px;
-    letter-spacing: 3px;
+    font-family:'Orbitron',sans-serif;
+    font-size:21px;
+    letter-spacing:3px;
+    margin-bottom:25px;
 }
 
 .creator-name span {
-    color: #aaa;
+    color:#888;
+}
+
+.social-links {
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.social-btn {
+    padding:13px 24px;
+    border:1px solid #555;
+    border-radius:5px;
+    text-decoration:none;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:2px;
+    transition:.3s;
+}
+
+.social-btn:hover {
+    color:black;
+    background:white;
+    transform:translateY(-4px);
+}
+
+/* ADMIN */
+
+.admin-trigger {
+    background:transparent;
+    color:#888;
+    border:1px solid #444;
+    padding:12px 18px;
+    cursor:pointer;
+    border-radius:5px;
+    font-size:11px;
+    letter-spacing:2px;
+    transition:.3s;
+}
+
+.admin-trigger:hover {
+    color:white;
+    border-color:white;
+}
+
+.admin-panel {
+    display:none;
+    padding:25px;
+    margin-top:25px;
+    border:1px solid #555;
+    border-radius:10px;
+    background:#101010;
+}
+
+.admin-panel.open {
+    display:block;
+}
+
+.admin-panel h3 {
+    font-family:'Orbitron',sans-serif;
+    font-size:17px;
+    margin:25px 0 15px;
+}
+
+.admin-panel h3:first-child {
+    margin-top:0;
+}
+
+.admin-form {
+    display:grid;
+    gap:12px;
+}
+
+.admin-form input,
+.admin-form textarea {
+    width:100%;
+    padding:13px;
+    background:#080808;
+    color:white;
+    border:1px solid #444;
+    border-radius:5px;
+    outline:none;
+}
+
+.admin-form input:focus,
+.admin-form textarea:focus {
+    border-color:white;
+}
+
+.admin-form textarea {
+    min-height:90px;
+    resize:vertical;
+}
+
+.admin-form button,
+.delete-btn {
+    padding:12px;
+    background:#eee;
+    color:black;
+    border:0;
+    border-radius:5px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.admin-list {
+    display:grid;
+    gap:8px;
+}
+
+.admin-item {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    padding:12px;
+    border:1px solid #333;
+    border-radius:5px;
+    font-size:12px;
+}
+
+.delete-btn {
+    padding:8px 12px;
+    background:#333;
+    color:white;
+    flex-shrink:0;
+}
+
+.admin-note {
+    color:#888;
+    font-size:11px;
+    line-height:1.7;
+    margin-bottom:15px;
+}
+
+/* MUSIC PLAYER */
+
+.music-player {
+    position:fixed;
+    right:22px;
+    bottom:22px;
+    z-index:150;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+#musicButton {
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    border:1px solid white;
+    background:#111e;
+    color:white;
+    font-size:24px;
+    cursor:pointer;
+    backdrop-filter:blur(12px);
+    box-shadow:0 0 20px #ffffff22;
+    transition:.3s;
+}
+
+#musicButton:hover {
+    background:white;
+    color:black;
+}
+
+#musicButton.playing {
+    animation:pulse 2s infinite;
+}
+
+.volume-panel {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:12px;
+    border:1px solid #ffffff35;
+    background:#080808ed;
+    border-radius:30px;
+    font-size:10px;
+    color:#aaa;
+}
+
+#volumeSlider {
+    width:75px;
+    accent-color:white;
+    cursor:pointer;
+}
+
+#volumeValue {
+    min-width:28px;
 }
 
 /* FOOTER */
 
 footer {
-    padding: 40px 20px;
-    text-align: center;
-    border-top: 1px solid rgba(255,255,255,.1);
-    color: #666;
-    font-size: 12px;
-    letter-spacing: 2px;
+    padding:45px 15px;
+    text-align:center;
+    border-top:1px solid var(--border);
+    color:#666;
+    font-size:11px;
+    letter-spacing:2px;
+    line-height:2;
 }
 
-/* SCROLL ANIMATION */
-
-.hidden {
-    opacity: 0;
-    transform: translateY(45px);
-    transition: opacity .8s ease, transform .8s ease;
-}
-
-.hidden.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* SCANLINES */
-
-body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 10;
-    opacity: .035;
-
-    background: repeating-linear-gradient(
-        to bottom,
-        transparent 0px,
-        transparent 3px,
-        white 4px
-    );
+.empty-state {
+    color:#777;
+    text-align:center;
+    padding:30px 15px;
+    border:1px dashed #444;
+    border-radius:8px;
+    font-size:12px;
+    line-height:1.8;
 }
 
 /* MOBILE */
 
-@media(max-width: 600px) {
-    header {
-        min-height: 380px;
+@media(max-width:850px) {
+    .menu-toggle {
+        display:block;
     }
 
-    .logo-title {
-        letter-spacing: 5px;
+    .nav-links {
+        display:none;
+        position:absolute;
+        top:100%;
+        left:0;
+        right:0;
+        padding:20px;
+        background:#080808f5;
+        border-bottom:1px solid #444;
+        flex-direction:column;
+        align-items:stretch;
+        gap:0;
     }
 
-    .subtitle {
-        font-size: 10px;
-        letter-spacing: 2px;
+    .nav-links.open {
+        display:flex;
     }
 
-    .achievements-grid {
-        grid-template-columns: 1fr;
+    .nav-links a {
+        padding:14px;
+        border-bottom:1px solid #ffffff12;
+    }
+}
+
+@media(max-width:600px) {
+    .hero {
+        min-height:390px;
     }
 
-    .join-box {
-        padding: 40px 18px;
+    .hero-subtitle {
+        font-size:10px;
+        letter-spacing:2px;
+    }
+
+    .stats-grid {
+        grid-template-columns:repeat(2,1fr);
     }
 
     section {
-        margin-bottom: 75px;
+        margin:70px 0;
     }
 
-    .social-btn {
-        width: 100%;
+    .music-player {
+        right:10px;
+        bottom:12px;
+        gap:6px;
+    }
+
+    #musicButton {
+        width:48px;
+        height:48px;
+    }
+
+    .volume-panel {
+        padding:9px;
+        gap:5px;
+    }
+
+    #volumeSlider {
+        width:55px;
     }
 }
 
-/* ACCESSIBILITY */
-
-@media(prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-        transition-duration: .01ms !important;
+@media(prefers-reduced-motion:reduce) {
+    *,*::before,*::after {
+        animation-duration:.01ms !important;
+        animation-iteration-count:1 !important;
+        scroll-behavior:auto !important;
+        transition-duration:.01ms !important;
     }
 
     .hidden {
-        opacity: 1;
-        transform: none;
+        opacity:1;
+        transform:none;
     }
 }
-
 </style>
 </head>
 
 <body>
 
+<!-- LOADING SCREEN -->
+
+<div id="loader">
+    <div class="loader-logo">ECO FAMQ</div>
+    <div class="loader-line"></div>
+    <div class="loader-caption">LOADING THE FAMILY</div>
+</div>
+
 <div class="light"></div>
 
-<header>
-    <div class="logo-title">ECO FAMQ</div>
+<!-- NAVIGATION -->
 
-    <div class="subtitle">
-        Единство. Честь. Победа. Мы пишем историю.
+<nav class="navbar">
+    <div class="nav-inner">
+
+        <a class="nav-logo" href="#home">ECO FAMQ</a>
+
+        <button class="menu-toggle" id="menuToggle"
+                aria-label="Открыть меню" aria-expanded="false">
+            ☰ MENU
+        </button>
+
+        <div class="nav-links" id="navLinks">
+            <a href="#home">ГЛАВНАЯ</a>
+            <a href="#stats">СТАТИСТИКА</a>
+            <a href="#members">СОСТАВ</a>
+            <a href="#leaders">ТОП</a>
+            <a href="#achievements">ПОБЕДЫ</a>
+            <a href="#news">НОВОСТИ</a>
+            <a href="#media">МЕДИА</a>
+            <a href="#recruitment">ВСТУПИТЬ</a>
+        </div>
+
+    </div>
+</nav>
+
+
+<!-- HERO -->
+
+<header class="hero" id="home">
+
+    <div class="hero-title">ECO FAMQ</div>
+
+    <div class="hero-subtitle">
+        ЕДИНСТВО. ЧЕСТЬ. ПОБЕДА.<br>
+        МЫ ПИШЕМ ИСТОРИЮ.
     </div>
 
-    <div class="header-line"></div>
+    <div class="hero-line"></div>
+
 </header>
+
 
 <div class="container">
 
-    <!-- DISCORD -->
+<!-- LIVE COUNTER -->
 
-    <section id="recruitment" class="hidden">
+<div class="online-panel">
+    <div class="online-dot"></div>
+    <div>
+        <div class="online-label">SITE ONLINE</div>
+        <div class="online-number" id="onlineCount">—</div>
+    </div>
+</div>
 
-        <div class="join-box">
 
-            <h3>ВСТУПИТЬ В СЕМЬЮ</h3>
+<!-- STATISTICS -->
 
-            <p>
-                Хочешь стать частью нашей истории?
-                Присоединяйся к ECO FAMQ и побеждай вместе с нами.
-                Подай заявку в нашем Discord!
-            </p>
+<section id="stats" class="hidden">
 
-            <a
-                href="https://discord.gg/8NdkeCbK5Z"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn-discord">
+    <h2 class="section-title">СТАТИСТИКА СЕМЬИ</h2>
 
-                ПОДАТЬ ЗАЯВКУ
+    <div class="stats-grid">
 
-            </a>
-
+        <div class="card stat-card">
+            <div class="stat-number" id="statMembers">0</div>
+            <div class="stat-label">УЧАСТНИКОВ</div>
         </div>
 
-    </section>
-
-
-    <!-- ACHIEVEMENTS -->
-
-    <section id="achievements" class="hidden">
-
-        <h2>НАШИ ДОСТИЖЕНИЯ</h2>
-
-        <div class="achievements-grid">
-
-            <!-- 1 -->
-
-            <div class="achieve-card">
-
-                <div class="achieve-img-container">
-
-                    <img
-                        src="1.png"
-                        alt="Radmir Cap"
-                        class="achieve-img">
-
-                </div>
-
-                <div class="achieve-info">
-
-                    <div class="achieve-date">
-                        14.03.2026
-                    </div>
-
-                    <div class="achieve-title">
-                        ПОБЕДИТЕЛИ RADMIR CAP S1
-                    </div>
-
-                    <div class="achieve-prize">
-                        🏆 1 МЕСТО | ПРИЗ 25.000Р
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- 2 -->
-
-            <div class="achieve-card">
-
-                <div class="achieve-img-container">
-
-                    <img
-                        src="2.png"
-                        alt="Турнир Мой Дом"
-                        class="achieve-img">
-
-                </div>
-
-                <div class="achieve-info">
-
-                    <div class="achieve-date">
-                        19.04.2026
-                    </div>
-
-                    <div class="achieve-title">
-                        УЧАСТНИКИ ТУРНИРА МОЙ ДОМ
-                    </div>
-
-                    <div class="achieve-prize">
-                        🏆 3 МЕСТО | ПРИЗ 10.000Р
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- 3 -->
-
-            <div class="achieve-card">
-
-                <div class="achieve-img-container">
-
-                    <img
-                        src="3.png"
-                        alt="Гольф Клуб"
-                        class="achieve-img">
-
-                </div>
-
-                <div class="achieve-info">
-
-                    <div class="achieve-date">
-                        02.05.2026
-                    </div>
-
-                    <div class="achieve-title">
-                        ПОБЕДИТЕЛИ ТУРНИРА ЗА ГОЛЬФ КЛУБ S1
-                    </div>
-
-                    <div class="achieve-prize">
-                        🏆 ПРИЗ 50.000Р
-                    </div>
-
-                </div>
-
-            </div>
-
+        <div class="card stat-card">
+            <div class="stat-number" id="statWins">2</div>
+            <div class="stat-label">ПОБЕД</div>
         </div>
 
-    </section>
+        <div class="card stat-card">
+            <div class="stat-number" id="statPrize">85K</div>
+            <div class="stat-label">ПРИЗОВЫЕ</div>
+        </div>
+
+        <div class="card stat-card">
+            <div class="stat-number" id="statNews">0</div>
+            <div class="stat-label">НОВОСТЕЙ</div>
+        </div>
+
+    </div>
+
+</section>
 
 
-    <!-- MEDIA -->
+<!-- RECRUITMENT -->
 
-    <section id="media" class="hidden">
+<section id="recruitment" class="hidden">
 
-        <h2>МЕДИА И СОЦСЕТИ</h2>
+    <div class="card join-box">
 
-        <div class="media-box">
+        <h2>ВСТУПИТЬ В СЕМЬЮ</h2>
 
-            <!-- BLOGGER 1 -->
+        <p>
+            Хочешь стать частью нашей истории?<br>
+            Присоединяйся к ECO FAMQ и побеждай вместе с нами.
+        </p>
 
-            <div class="creator">
+        <a href="https://discord.gg/8NdkeCbK5Z"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="main-btn">
+            ПОДАТЬ ЗАЯВКУ
+        </a>
 
-                <div class="creator-name">
-                    <span>MEDIA //</span> KERTY66
-                </div>
+    </div>
 
-                <div class="social-links">
+</section>
 
-                    <a
-                        href="https://www.twitch.tv/kerty66"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="social-btn">
 
-                        TWITCH
+<!-- FAMILY MEMBERS -->
 
-                    </a>
+<section id="members" class="hidden">
 
-                    <a
-                        href="https://www.youtube.com/@kerty_66"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="social-btn">
+    <h2 class="section-title">СОСТАВ СЕМЬИ</h2>
 
-                        YOUTUBE
+    <div class="members-grid" id="membersGrid"></div>
 
-                    </a>
+</section>
 
-                    <a
-                        href="https://www.tiktok.com/@kerty660"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="social-btn">
 
-                        TIKTOK
+<!-- LEADERBOARD -->
 
-                    </a>
+<section id="leaders" class="hidden">
 
-                </div>
+    <h2 class="section-title">ТАБЛИЦА ЛИДЕРОВ</h2>
 
+    <div class="table-wrap">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>МЕСТО</th>
+                    <th>ИГРОК</th>
+                    <th>ДОЛЖНОСТЬ</th>
+                    <th>ПОБЕДЫ</th>
+                </tr>
+            </thead>
+
+            <tbody id="leaderboard"></tbody>
+        </table>
+
+    </div>
+
+</section>
+
+
+<!-- ACHIEVEMENTS -->
+
+<section id="achievements" class="hidden">
+
+    <h2 class="section-title">НАШИ ДОСТИЖЕНИЯ</h2>
+
+    <div class="achievements-grid">
+
+        <div class="card">
+            <div class="image-wrap">
+                <img src="1.png" alt="Radmir Cap" class="achievement-image">
+            </div>
+            <div class="achievement-info">
+                <div class="achievement-date">14.03.2026</div>
+                <div class="achievement-title">ПОБЕДИТЕЛИ RADMIR CAP S1</div>
+                <div class="achievement-prize">🏆 1 МЕСТО | 25.000Р</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="image-wrap">
+                <img src="2.png" alt="Мой Дом" class="achievement-image">
+            </div>
+            <div class="achievement-info">
+                <div class="achievement-date">19.04.2026</div>
+                <div class="achievement-title">ТУРНИР МОЙ ДОМ</div>
+                <div class="achievement-prize">🏆 3 МЕСТО | 10.000Р</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="image-wrap">
+                <img src="3.png" alt="Гольф Клуб" class="achievement-image">
+            </div>
+            <div class="achievement-info">
+                <div class="achievement-date">02.05.2026</div>
+                <div class="achievement-title">ПОБЕДИТЕЛИ ЗА ГОЛЬФ КЛУБ S1</div>
+                <div class="achievement-prize">🏆 50.000Р</div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- GALLERY -->
+
+<section id="gallery" class="hidden">
+
+    <h2 class="section-title">ГАЛЕРЕЯ ПОБЕД</h2>
+
+    <div class="gallery-grid" id="galleryGrid">
+
+        <div class="card gallery-card">
+            <img src="1.png" alt="Radmir Cap">
+            <div class="gallery-caption">RADМIR CAP S1 • 1 МЕСТО</div>
+        </div>
+
+        <div class="card gallery-card">
+            <img src="2.png" alt="Мой Дом">
+            <div class="gallery-caption">МОЙ ДОМ • 3 МЕСТО</div>
+        </div>
+
+        <div class="card gallery-card">
+            <img src="3.png" alt="Гольф Клуб">
+            <div class="gallery-caption">ГОЛЬФ КЛУБ S1 • ПОБЕДА</div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- NEWS -->
+
+<section id="news" class="hidden">
+
+    <h2 class="section-title">НОВОСТИ СЕМЬИ</h2>
+
+    <div class="news-list" id="newsList"></div>
+
+</section>
+
+
+<!-- MEDIA -->
+
+<section id="media" class="hidden">
+
+    <h2 class="section-title">МЕДИА И СОЦСЕТИ</h2>
+
+    <div class="card">
+
+        <div class="creator">
+
+            <div class="creator-name">
+                <span>MEDIA //</span> KERTY66
             </div>
 
+            <div class="social-links">
 
-            <!-- BLOGGER 2 -->
+                <a class="social-btn"
+                   href="https://www.twitch.tv/kerty66"
+                   target="_blank" rel="noopener noreferrer">TWITCH</a>
 
-            <div class="creator">
+                <a class="social-btn"
+                   href="https://www.youtube.com/@kerty_66"
+                   target="_blank" rel="noopener noreferrer">YOUTUBE</a>
 
-                <div class="creator-name">
-                    <span>MEDIA //</span> SOHTE13
-                </div>
-
-                <div class="social-links">
-
-                    <a
-                        href="https://www.twitch.tv/sohte13"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="social-btn">
-
-                        TWITCH
-
-                    </a>
-
-                    <a
-                        href="https://t.me/internetsherif333"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="social-btn">
-
-                        TELEGRAM
-
-                    </a>
-
-                    <a
-                        href="https://www.youtube.com/@kuwe1ck"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="social-btn">
-
-                        YOUTUBE
-
-                    </a>
-
-                </div>
+                <a class="social-btn"
+                   href="https://www.tiktok.com/@kerty660"
+                   target="_blank" rel="noopener noreferrer">TIKTOK</a>
 
             </div>
 
         </div>
 
-    </section>
+        <div class="creator">
+
+            <div class="creator-name">
+                <span>MEDIA //</span> SOHTE13
+            </div>
+
+            <div class="social-links">
+
+                <a class="social-btn"
+                   href="https://www.twitch.tv/sohte13"
+                   target="_blank" rel="noopener noreferrer">TWITCH</a>
+
+                <a class="social-btn"
+                   href="https://t.me/internetsherif333"
+                   target="_blank" rel="noopener noreferrer">TELEGRAM</a>
+
+                <a class="social-btn"
+                   href="https://www.youtube.com/@kuwe1ck"
+                   target="_blank" rel="noopener noreferrer">YOUTUBE</a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ADMIN PANEL -->
+
+<section id="administration" class="hidden">
+
+    <h2 class="section-title">УПРАВЛЕНИЕ САЙТОМ</h2>
+
+    <div style="text-align:center">
+        <button class="admin-trigger" id="adminToggle">
+            ⚙ ОТКРЫТЬ АДМИН-ПАНЕЛЬ
+        </button>
+    </div>
+
+    <div class="admin-panel" id="adminPanel">
+
+        <p class="admin-note">
+            Локальная панель редактирования. Изменения хранятся
+            в браузере этого устройства и не синхронизируются
+            с другими посетителями. Не вводи сюда секретные данные.
+        </p>
+
+        <h3>ДОБАВИТЬ УЧАСТНИКА</h3>
+
+        <form class="admin-form" id="memberForm">
+
+            <input name="name" placeholder="Игровой ник" required maxlength="35">
+
+            <input name="role" placeholder="Должность / ранг" required maxlength="40">
+
+            <input name="wins" type="number" min="0" max="9999"
+                   placeholder="Количество побед" value="0">
+
+            <input name="avatar" type="url"
+                   placeholder="Ссылка на аватарку (необязательно)">
+
+            <button type="submit">ДОБАВИТЬ УЧАСТНИКА</button>
+
+        </form>
+
+        <h3>УЧАСТНИКИ</h3>
+        <div class="admin-list" id="adminMembers"></div>
+
+
+        <h3>ДОБАВИТЬ НОВОСТЬ</h3>
+
+        <form class="admin-form" id="newsForm">
+
+            <input name="title" placeholder="Заголовок новости" required maxlength="80">
+
+            <textarea name="text" placeholder="Текст новости" required maxlength="1000"></textarea>
+
+            <button type="submit">ОПУБЛИКОВАТЬ НОВОСТЬ</button>
+
+        </form>
+
+        <h3>УПРАВЛЕНИЕ НОВОСТЯМИ</h3>
+        <div class="admin-list" id="adminNews"></div>
+
+
+        <h3>ДОБАВИТЬ ФОТО В ГАЛЕРЕЮ</h3>
+
+        <form class="admin-form" id="galleryForm">
+
+            <input name="url" type="url" placeholder="Прямая ссылка на изображение" required>
+
+            <input name="caption" placeholder="Подпись к фотографии" required maxlength="80">
+
+            <button type="submit">ДОБАВИТЬ ФОТО</button>
+
+        </form>
+
+        <h3>ФОТОГРАФИИ ГАЛЕРЕИ</h3>
+        <div class="admin-list" id="adminGallery"></div>
+
+    </div>
+
+</section>
 
 </div>
 
@@ -762,186 +1355,506 @@ body::after {
 <!-- FOOTER -->
 
 <footer>
-
-    <p>
-        © 2026 ECO FAMQ
-    </p>
-
-    <p style="margin-top:12px">
-        DEAD INSIDE STYLE | RADMIR GTA 5 RP
-    </p>
-
+    © 2026 ECO FAMQ<br>
+    DEAD INSIDE STYLE | RADMIR GTA 5 RP
 </footer>
 
 
-<!-- ANIMATIONS -->
+<!-- MUSIC PLAYER -->
 
-<script>
-
-const observer = new IntersectionObserver((entries) => {
-
-    entries.forEach(entry => {
-
-        if (entry.isIntersecting) {
-
-            entry.target.classList.add('show');
-
-            observer.unobserve(entry.target);
-
-        }
-
-    });
-
-}, {
-    threshold: 0.12
-});
-
-document.querySelectorAll('.hidden').forEach(element => {
-
-    observer.observe(element);
-
-});
-
-</script>
-
-<audio id="bgMusic" loop>
+<audio id="bgMusic" loop preload="none">
     <source src="music.mp3" type="audio/mpeg">
 </audio>
 
 <div class="music-player">
 
-    <button id="musicButton" aria-label="Включить музыку">
-        ♪
-    </button>
+    <button id="musicButton" aria-label="Включить музыку">♪</button>
 
     <div class="volume-panel">
-        <span>VOLUME</span>
-
-        <input
-            type="range"
-            id="volumeSlider"
-            min="0"
-            max="100"
-            value="25"
-        >
-
+        <span>VOL</span>
+        <input type="range" id="volumeSlider"
+               min="0" max="100" value="25"
+               aria-label="Громкость">
         <span id="volumeValue">25%</span>
     </div>
 
 </div>
 
-<style>
-.music-player {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-#musicButton {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    border: 1px solid white;
-    background: rgba(255,255,255,.08);
-    color: white;
-    font-size: 25px;
-    cursor: pointer;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 20px rgba(255,255,255,.2);
-    transition: .3s;
-}
-
-#musicButton:hover {
-    background: white;
-    color: black;
-    transform: scale(1.1);
-}
-
-#musicButton.playing {
-    animation: musicPulse 2s infinite;
-}
-
-.volume-panel {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 15px;
-    border: 1px solid rgba(255,255,255,.3);
-    background: rgba(10,10,10,.9);
-    border-radius: 30px;
-    backdrop-filter: blur(15px);
-    color: white;
-    font-size: 10px;
-    letter-spacing: 1px;
-}
-
-#volumeSlider {
-    width: 85px;
-    accent-color: white;
-    cursor: pointer;
-}
-
-#volumeValue {
-    min-width: 30px;
-    color: #aaa;
-}
-
-@keyframes musicPulse {
-    50% {
-        box-shadow: 0 0 30px white;
-    }
-}
-
-@media(max-width: 500px) {
-    .music-player {
-        right: 12px;
-        bottom: 15px;
-        gap: 7px;
-    }
-
-    .volume-panel {
-        gap: 6px;
-        padding: 10px;
-    }
-
-    #volumeSlider {
-        width: 65px;
-    }
-}
-</style>
 
 <script>
+
+/* LOADER */
+
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.getElementById('loader').classList.add('hide');
+    }, 700);
+});
+
+setTimeout(() => {
+    document.getElementById('loader').classList.add('hide');
+}, 4000);
+
+
+/* MOBILE MENU */
+
+const menuToggle = document.getElementById('menuToggle');
+const navLinks = document.getElementById('navLinks');
+
+menuToggle.addEventListener('click', () => {
+    const opened = navLinks.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', String(opened));
+});
+
+navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+    });
+});
+
+
+/* SCROLL ANIMATION */
+
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+            observer.unobserve(entry.target);
+        }
+    });
+}, {threshold:0.1});
+
+document.querySelectorAll('.hidden').forEach(el => observer.observe(el));
+
+
+/* LOCAL DATA */
+
+const STORAGE_KEY = 'ecofamq_site_data_v1';
+
+const initialData = {
+    members: [],
+    news: [],
+    gallery: []
+};
+
+function loadData() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+        if (!saved || typeof saved !== 'object') {
+            return structuredClone(initialData);
+        }
+
+        return {
+            members: Array.isArray(saved.members) ? saved.members : [],
+            news: Array.isArray(saved.news) ? saved.news : [],
+            gallery: Array.isArray(saved.gallery) ? saved.gallery : []
+        };
+    } catch {
+        return structuredClone(initialData);
+    }
+}
+
+let data = loadData();
+
+function saveData() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        renderAll();
+    } catch {
+        alert('Не удалось сохранить данные. Возможно, превышен лимит хранилища.');
+    }
+}
+
+function safeText(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        '"':'&quot;',
+        "'":'&#39;'
+    })[char]);
+}
+
+function validImageUrl(value) {
+    try {
+        const url = new URL(value);
+        return ['https:', 'http:'].includes(url.protocol) ? url.href : '';
+    } catch {
+        return '';
+    }
+}
+
+
+/* MEMBERS */
+
+function renderMembers() {
+    const grid = document.getElementById('membersGrid');
+    const admin = document.getElementById('adminMembers');
+
+    grid.innerHTML = '';
+    admin.innerHTML = '';
+
+    if (!data.members.length) {
+        grid.innerHTML = '<div class="empty-state">СОСТАВ ПОКА НЕ ДОБАВЛЕН<br>Участники появятся здесь после добавления через админ-панель.</div>';
+        admin.innerHTML = '<div class="empty-state">Участников пока нет.</div>';
+        return;
+    }
+
+    data.members.forEach((member, index) => {
+        const name = safeText(member.name);
+        const role = safeText(member.role);
+        const avatar = validImageUrl(member.avatar || '');
+        const wins = Math.max(0, Number(member.wins) || 0);
+
+        const card = document.createElement('div');
+        card.className = 'card member-card';
+
+        card.innerHTML = `
+            <div class="avatar">
+                ${avatar
+                    ? `<img src="${safeText(avatar)}" alt="">`
+                    : safeText((member.name || '?').slice(0,2).toUpperCase())}
+            </div>
+            <div class="member-name">${name}</div>
+            <div class="member-role">${role}</div>
+            <div class="member-wins">🏆 ПОБЕД: ${wins}</div>
+        `;
+
+        grid.appendChild(card);
+
+        const row = document.createElement('div');
+        row.className = 'admin-item';
+        row.innerHTML = `
+            <span>${name} — ${role}</span>
+            <button class="delete-btn" data-delete-member="${index}">УДАЛИТЬ</button>
+        `;
+        admin.appendChild(row);
+    });
+
+    document.getElementById('statMembers').textContent = data.members.length;
+}
+
+function renderLeaderboard() {
+    const body = document.getElementById('leaderboard');
+    body.innerHTML = '';
+
+    const sorted = [...data.members].sort(
+        (a,b) => (Number(b.wins)||0) - (Number(a.wins)||0)
+    );
+
+    if (!sorted.length) {
+        body.innerHTML = '<tr><td colspan="4">Добавьте участников через админ-панель.</td></tr>';
+        return;
+    }
+
+    sorted.forEach((member,index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>#${index+1}</td>
+            <td>${safeText(member.name)}</td>
+            <td>${safeText(member.role)}</td>
+            <td>${Math.max(0,Number(member.wins)||0)}</td>
+        `;
+        body.appendChild(tr);
+    });
+}
+
+
+/* NEWS */
+
+function renderNews() {
+    const list = document.getElementById('newsList');
+    const admin = document.getElementById('adminNews');
+
+    list.innerHTML = '';
+    admin.innerHTML = '';
+
+    if (!data.news.length) {
+        list.innerHTML = '<div class="empty-state">ПОКА НЕТ НОВОСТЕЙ<br>Следите за обновлениями ECO FAMQ.</div>';
+        admin.innerHTML = '<div class="empty-state">Новостей пока нет.</div>';
+    }
+
+    data.news.forEach((item,index) => {
+        const card = document.createElement('article');
+        card.className = 'card news-card';
+        card.innerHTML = `
+            <div class="news-date">${safeText(item.date)}</div>
+            <div class="news-title">${safeText(item.title)}</div>
+            <div class="news-text">${safeText(item.text)}</div>
+        `;
+        list.appendChild(card);
+
+        const row = document.createElement('div');
+        row.className = 'admin-item';
+        row.innerHTML = `
+            <span>${safeText(item.title)}</span>
+            <button class="delete-btn" data-delete-news="${index}">УДАЛИТЬ</button>
+        `;
+        admin.appendChild(row);
+    });
+
+    document.getElementById('statNews').textContent = data.news.length;
+}
+
+
+/* GALLERY */
+
+function renderGallery() {
+    const grid = document.getElementById('galleryGrid');
+    const admin = document.getElementById('adminGallery');
+
+    grid.querySelectorAll('[data-custom-gallery]').forEach(el => el.remove());
+    admin.innerHTML = '';
+
+    data.gallery.forEach((item,index) => {
+        const url = validImageUrl(item.url);
+
+        if (!url) return;
+
+        const card = document.createElement('div');
+        card.className = 'card gallery-card';
+        card.dataset.customGallery = 'true';
+
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = item.caption || 'ECO FAMQ';
+
+        const caption = document.createElement('div');
+        caption.className = 'gallery-caption';
+        caption.textContent = item.caption;
+
+        card.append(img,caption);
+        grid.appendChild(card);
+
+        const row = document.createElement('div');
+        row.className = 'admin-item';
+        row.innerHTML = `
+            <span>${safeText(item.caption)}</span>
+            <button class="delete-btn" data-delete-gallery="${index}">УДАЛИТЬ</button>
+        `;
+        admin.appendChild(row);
+    });
+
+    if (!data.gallery.length) {
+        admin.innerHTML = '<div class="empty-state">Дополнительных фотографий пока нет.</div>';
+    }
+}
+
+
+/* STATISTICS */
+
+function renderAll() {
+    renderMembers();
+    renderLeaderboard();
+    renderNews();
+    renderGallery();
+}
+
+
+/* ADMIN PANEL */
+
+const adminToggle = document.getElementById('adminToggle');
+const adminPanel = document.getElementById('adminPanel');
+
+adminToggle.addEventListener('click', () => {
+    const opened = adminPanel.classList.toggle('open');
+
+    adminToggle.textContent = opened
+        ? '✕ ЗАКРЫТЬ АДМИН-ПАНЕЛЬ'
+        : '⚙ ОТКРЫТЬ АДМИН-ПАНЕЛЬ';
+});
+
+document.getElementById('memberForm').addEventListener('submit', event => {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const values = new FormData(form);
+
+    const name = String(values.get('name') || '').trim();
+    const role = String(values.get('role') || '').trim();
+    const wins = Number(values.get('wins')) || 0;
+    const avatar = String(values.get('avatar') || '').trim();
+
+    if (!name || !role || wins < 0 || wins > 9999) return;
+
+    if (avatar && !validImageUrl(avatar)) {
+        alert('Укажи корректную ссылку на аватарку.');
+        return;
+    }
+
+    data.members.push({
+        name,role,wins,avatar
+    });
+
+    saveData();
+    form.reset();
+});
+
+document.getElementById('newsForm').addEventListener('submit', event => {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const values = new FormData(form);
+
+    const title = String(values.get('title') || '').trim();
+    const text = String(values.get('text') || '').trim();
+
+    if (!title || !text) return;
+
+    data.news.unshift({
+        title,
+        text,
+        date: new Date().toLocaleDateString('ru-RU')
+    });
+
+    saveData();
+    form.reset();
+});
+
+document.getElementById('galleryForm').addEventListener('submit', event => {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const values = new FormData(form);
+
+    const url = validImageUrl(String(values.get('url') || '').trim());
+    const caption = String(values.get('caption') || '').trim();
+
+    if (!url || !caption) {
+        alert('Проверь ссылку и подпись.');
+        return;
+    }
+
+    data.gallery.unshift({url,caption});
+
+    saveData();
+    form.reset();
+});
+
+document.getElementById('adminPanel').addEventListener('click', event => {
+    const button = event.target.closest('button');
+
+    if (!button) return;
+
+    if (button.dataset.deleteMember !== undefined) {
+        const index = Number(button.dataset.deleteMember);
+        if (confirm('Удалить этого участника?')) {
+            data.members.splice(index,1);
+            saveData();
+        }
+    }
+
+    if (button.dataset.deleteNews !== undefined) {
+        const index = Number(button.dataset.deleteNews);
+        if (confirm('Удалить эту новость?')) {
+            data.news.splice(index,1);
+            saveData();
+        }
+    }
+
+    if (button.dataset.deleteGallery !== undefined) {
+        const index = Number(button.dataset.deleteGallery);
+        if (confirm('Удалить эту фотографию?')) {
+            data.gallery.splice(index,1);
+            saveData();
+        }
+    }
+});
+
+renderAll();
+
+
+/* MUSIC */
+
 const music = document.getElementById('bgMusic');
-const button = document.getElementById('musicButton');
+const musicButton = document.getElementById('musicButton');
 const slider = document.getElementById('volumeSlider');
 const volumeValue = document.getElementById('volumeValue');
 
 music.volume = 0.25;
 
-button.addEventListener('click', async () => {
+musicButton.addEventListener('click', async () => {
     if (music.paused) {
         try {
             await music.play();
-            button.classList.add('playing');
-            button.textContent = 'Ⅱ';
+            musicButton.classList.add('playing');
+            musicButton.textContent = 'Ⅱ';
         } catch (error) {
-            console.log('Не удалось запустить музыку:', error);
+            alert('Не удалось загрузить музыку. Проверь наличие music.mp3.');
         }
     } else {
         music.pause();
-        button.classList.remove('playing');
-        button.textContent = '♪';
+        musicButton.classList.remove('playing');
+        musicButton.textContent = '♪';
     }
 });
 
 slider.addEventListener('input', () => {
-    music.volume = slider.value / 100;
+    music.volume = Number(slider.value)/100;
     volumeValue.textContent = slider.value + '%';
 });
+
+
+/* SUPABASE LIVE ONLINE */
+
+const SUPABASE_URL = 'ВСТАВЬ_PROJECT_URL';
+const SUPABASE_KEY = 'ВСТАВЬ_PUBLISHABLE_KEY';
+
+if (
+    SUPABASE_URL.startsWith('https://') &&
+    !SUPABASE_URL.includes('ВСТАВЬ') &&
+    SUPABASE_KEY &&
+    !SUPABASE_KEY.includes('ВСТАВЬ')
+) {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+
+    script.onload = () => {
+        try {
+            const client = window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
+            const channel = client.channel('eco-famq-online', {
+                config: {
+                    presence: {
+                        key: crypto.randomUUID()
+                    }
+                }
+            });
+
+            channel
+                .on('presence',{event:'sync'},() => {
+                    const state = channel.presenceState();
+
+                    const total = Object.values(state)
+                        .reduce((sum,users) => sum + users.length,0);
+
+                    document.getElementById('onlineCount').textContent = total;
+                })
+                .subscribe(async status => {
+                    if (status === 'SUBSCRIBED') {
+                        await channel.track({
+                            online_at:new Date().toISOString()
+                        });
+                    }
+                });
+        } catch(error) {
+            console.error('Online counter error:',error);
+            document.getElementById('onlineCount').textContent = '—';
+        }
+    };
+
+    script.onerror = () => {
+        document.getElementById('onlineCount').textContent = '—';
+    };
+
+    document.head.appendChild(script);
+}
+
 </script>
 
 </body>
