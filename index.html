@@ -804,5 +804,145 @@ document.querySelectorAll('.hidden').forEach(element => {
 
 </script>
 
+<audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="music-player">
+
+    <button id="musicButton" aria-label="Включить музыку">
+        ♪
+    </button>
+
+    <div class="volume-panel">
+        <span>VOLUME</span>
+
+        <input
+            type="range"
+            id="volumeSlider"
+            min="0"
+            max="100"
+            value="25"
+        >
+
+        <span id="volumeValue">25%</span>
+    </div>
+
+</div>
+
+<style>
+.music-player {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#musicButton {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border: 1px solid white;
+    background: rgba(255,255,255,.08);
+    color: white;
+    font-size: 25px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(255,255,255,.2);
+    transition: .3s;
+}
+
+#musicButton:hover {
+    background: white;
+    color: black;
+    transform: scale(1.1);
+}
+
+#musicButton.playing {
+    animation: musicPulse 2s infinite;
+}
+
+.volume-panel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    border: 1px solid rgba(255,255,255,.3);
+    background: rgba(10,10,10,.9);
+    border-radius: 30px;
+    backdrop-filter: blur(15px);
+    color: white;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+#volumeSlider {
+    width: 85px;
+    accent-color: white;
+    cursor: pointer;
+}
+
+#volumeValue {
+    min-width: 30px;
+    color: #aaa;
+}
+
+@keyframes musicPulse {
+    50% {
+        box-shadow: 0 0 30px white;
+    }
+}
+
+@media(max-width: 500px) {
+    .music-player {
+        right: 12px;
+        bottom: 15px;
+        gap: 7px;
+    }
+
+    .volume-panel {
+        gap: 6px;
+        padding: 10px;
+    }
+
+    #volumeSlider {
+        width: 65px;
+    }
+}
+</style>
+
+<script>
+const music = document.getElementById('bgMusic');
+const button = document.getElementById('musicButton');
+const slider = document.getElementById('volumeSlider');
+const volumeValue = document.getElementById('volumeValue');
+
+music.volume = 0.25;
+
+button.addEventListener('click', async () => {
+    if (music.paused) {
+        try {
+            await music.play();
+            button.classList.add('playing');
+            button.textContent = 'Ⅱ';
+        } catch (error) {
+            console.log('Не удалось запустить музыку:', error);
+        }
+    } else {
+        music.pause();
+        button.classList.remove('playing');
+        button.textContent = '♪';
+    }
+});
+
+slider.addEventListener('input', () => {
+    music.volume = slider.value / 100;
+    volumeValue.textContent = slider.value + '%';
+});
+</script>
+
 </body>
 </html>
