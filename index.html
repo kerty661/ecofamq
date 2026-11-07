@@ -1,332 +1,808 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ECO FAMQ | RADMIR RP</title>
-    <style>
-        :root {
-            --bg-color: #0b0c10;
-            --text-color: #c5c6c7;
-            --accent-green: #45f3ff;
-            --accent-purple: #8a2be2;
-            --accent-gold: #ffd700;
-            --card-bg: rgba(0, 0, 0, 0.6);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+<title>ECO FAMQ | DEAD INSIDE</title>
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            overflow-x: hidden;
-            background-image: radial-gradient(circle at 50% 10%, rgba(138, 43, 226, 0.2), transparent 50%),
-                              radial-gradient(circle at 10% 80%, rgba(69, 243, 255, 0.1), transparent 40%);
-        }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800&display=swap');
 
-        header {
-            text-align: center;
-            padding: 60px 20px;
-            position: relative;
-        }
+:root {
+    --black: #050505;
+    --white: #ffffff;
+    --silver: #c8c8c8;
+    --gray: #777777;
+    --card: rgba(255,255,255,0.035);
+}
 
-        .logo-title {
-            font-size: 3.5rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.3), 0 0 20px var(--accent-purple);
-            margin-bottom: 10px;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        .subtitle {
-            font-size: 1.2rem;
-            color: var(--accent-green);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
+html {
+    scroll-behavior: smooth;
+}
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+body {
+    background: var(--black);
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+}
 
-        section {
-            margin-bottom: 60px;
-        }
+/* BACKGROUND */
 
-        h2 {
-            font-size: 2rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-            text-align: center;
-            color: #fff;
-            border-bottom: 2px solid rgba(255,255,255,0.1);
-            padding-bottom: 10px;
-        }
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
 
-        .join-box {
-            background: linear-gradient(135deg, rgba(138, 43, 226, 0.25), rgba(69, 243, 255, 0.15));
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-        }
+    background:
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,.12), transparent 35%),
+        radial-gradient(circle at 0% 70%, rgba(180,180,180,.07), transparent 30%),
+        radial-gradient(circle at 100% 90%, rgba(255,255,255,.08), transparent 35%);
 
-        .join-box h3 {
-            font-size: 1.8rem;
-            color: #fff;
-            margin-bottom: 15px;
-        }
+    animation: backgroundMove 9s ease-in-out infinite alternate;
+}
 
-        .join-box p {
-            margin-bottom: 25px;
-            font-size: 1.1rem;
-        }
+@keyframes backgroundMove {
+    from { filter: brightness(.7); }
+    to { filter: brightness(1.5); }
+}
 
-        .btn-discord {
-            display: inline-block;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #fff;
-            background-color: #5865F2;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(88, 101, 242, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+/* MOVING LIGHT */
 
-        .btn-discord:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(88, 101, 242, 0.6);
-            background-color: #4752c4;
-        }
+.light {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255,255,255,.09), transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: lightMove 8s ease-in-out infinite alternate;
+}
 
-        .achievements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-        }
+@keyframes lightMove {
+    from { transform: translate(-70%, -20%); }
+    to { transform: translate(40%, 20%); }
+}
 
-        .achieve-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
+/* HEADER */
 
-        .achieve-card:hover {
-            transform: translateY(-5px);
-        }
+header {
+    min-height: 480px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 80px 20px;
+    position: relative;
+}
 
-        .achieve-card.gold-border { box-shadow: 0 5px 15px rgba(255, 215, 0, 0.1), inset 0 0 20px rgba(0,0,0,0.8); }
-        .achieve-card.purple-border { box-shadow: 0 5px 15px rgba(138, 43, 226, 0.1), inset 0 0 20px rgba(0,0,0,0.8); }
-        .achieve-card.green-border { box-shadow: 0 5px 15px rgba(69, 243, 255, 0.1), inset 0 0 20px rgba(0,0,0,0.8); }
+.logo-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(3rem, 10vw, 7rem);
+    font-weight: 900;
+    letter-spacing: 12px;
 
-        .achieve-img-container {
-            width: 100%;
-            height: 200px;
-            overflow: hidden;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            background-color: #000;
-        }
+    background: linear-gradient(
+        120deg,
+        #555,
+        #fff,
+        #888,
+        #fff,
+        #444,
+        #fff
+    );
 
-        .achieve-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
+    background-size: 300% auto;
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
 
-        .achieve-card:hover .achieve-img {
-            transform: scale(1.05);
-        }
+    animation: silver 5s linear infinite, logoAppear 1.5s ease;
+    filter: drop-shadow(0 0 20px rgba(255,255,255,.25));
+}
 
-        .achieve-info {
-            padding: 25px;
-        }
+@keyframes silver {
+    to { background-position: 300% center; }
+}
 
-        .achieve-date {
-            font-size: 0.85rem;
-            color: #888;
-            margin-bottom: 8px;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
+@keyframes logoAppear {
+    from {
+        opacity: 0;
+        transform: translateY(35px);
+        letter-spacing: 25px;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-        .achieve-title {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 12px;
-            line-height: 1.4;
-        }
+.subtitle {
+    margin-top: 20px;
+    font-size: 13px;
+    letter-spacing: 5px;
+    color: #aaa;
+    text-transform: uppercase;
+    animation: fadeIn 2s ease;
+}
 
-        .achieve-prize {
-            font-size: 1.1rem;
-            color: var(--accent-gold);
-            font-weight: bold;
-        }
+.header-line {
+    width: 120px;
+    height: 2px;
+    margin-top: 30px;
+    background: linear-gradient(90deg, transparent, white, transparent);
+    box-shadow: 0 0 15px white;
+    animation: linePulse 3s infinite;
+}
 
-        .media-box {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 40px 20px;
-            text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
+@keyframes linePulse {
+    50% { width: 220px; opacity: .5; }
+}
 
-        .media-username {
-            font-size: 1.6rem;
-            color: #fff;
-            margin-bottom: 25px;
-        }
+/* CONTAINER */
 
-        .media-username span {
-            color: var(--accent-green);
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(69, 243, 255, 0.3);
-        }
+.container {
+    max-width: 1250px;
+    margin: auto;
+    padding: 20px;
+}
 
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+section {
+    margin-bottom: 100px;
+}
 
-        .social-btn {
-            padding: 12px 30px;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 700;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
+/* TITLES */
 
-        .social-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
-            filter: brightness(1.2);
-        }
+h2 {
+    font-family: 'Orbitron', sans-serif;
+    text-align: center;
+    font-size: clamp(22px, 4vw, 34px);
+    letter-spacing: 5px;
+    margin-bottom: 40px;
+    color: white;
+    text-transform: uppercase;
+}
 
-        .twitch { background-color: #9146FF; }
-        .youtube { background-color: #FF0000; }
-        .tiktok { background-color: #000000; border: 1px solid rgba(255,255,255,0.3); }
+h2::after {
+    content: "";
+    display: block;
+    margin: 18px auto 0;
+    width: 90px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, white, transparent);
+}
 
-        footer {
-            text-align: center;
-            padding: 40px 20px;
-            font-size: 0.9rem;
-            color: #555;
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-    </style>
+/* JOIN BOX */
+
+.join-box {
+    position: relative;
+    padding: 55px 25px;
+    text-align: center;
+    border-radius: 15px;
+    background: linear-gradient(
+        135deg,
+        rgba(255,255,255,.09),
+        rgba(255,255,255,.015)
+    );
+
+    border: 1px solid rgba(255,255,255,.18);
+    box-shadow: 0 15px 60px rgba(0,0,0,.7);
+    overflow: hidden;
+    backdrop-filter: blur(15px);
+}
+
+.join-box::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.09),
+        transparent
+    );
+    transform: skewX(-25deg);
+    animation: shine 6s infinite;
+}
+
+@keyframes shine {
+    100% { left: 150%; }
+}
+
+.join-box h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 26px;
+    margin-bottom: 20px;
+}
+
+.join-box p {
+    color: #aaa;
+    margin-bottom: 30px;
+    line-height: 1.7;
+}
+
+/* BUTTONS */
+
+.btn-discord {
+    display: inline-block;
+    position: relative;
+    padding: 16px 40px;
+    color: black;
+    background: linear-gradient(120deg, #777, white, #aaa, white);
+    background-size: 200%;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 900;
+    letter-spacing: 2px;
+    transition: .4s;
+    box-shadow: 0 0 20px rgba(255,255,255,.15);
+}
+
+.btn-discord:hover {
+    background-position: right;
+    transform: translateY(-5px);
+    box-shadow: 0 0 35px rgba(255,255,255,.45);
+}
+
+/* ACHIEVEMENTS */
+
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.achieve-card {
+    position: relative;
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,.13);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: .5s;
+    box-shadow: 0 10px 35px rgba(0,0,0,.5);
+}
+
+.achieve-card:hover {
+    transform: translateY(-10px) scale(1.015);
+    border-color: rgba(255,255,255,.65);
+    box-shadow: 0 15px 40px rgba(255,255,255,.12);
+}
+
+.achieve-img-container {
+    height: 210px;
+    overflow: hidden;
+    background: #111;
+}
+
+.achieve-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) contrast(1.1);
+    transition: .7s;
+}
+
+.achieve-card:hover .achieve-img {
+    transform: scale(1.08);
+    filter: grayscale(20%) contrast(1.1);
+}
+
+.achieve-info {
+    padding: 25px;
+}
+
+.achieve-date {
+    color: #888;
+    font-size: 12px;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.achieve-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 18px;
+}
+
+.achieve-prize {
+    color: white;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-shadow: 0 0 12px rgba(255,255,255,.5);
+}
+
+/* MEDIA */
+
+.media-box {
+    padding: 35px 20px;
+    background: rgba(255,255,255,.025);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px;
+    text-align: center;
+}
+
+.media-username {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 21px;
+    margin-bottom: 25px;
+}
+
+.media-username span {
+    color: #ccc;
+    text-shadow: 0 0 15px white;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.social-btn {
+    display: inline-block;
+    min-width: 130px;
+    padding: 13px 25px;
+    color: white;
+    text-decoration: none;
+    background: linear-gradient(135deg, #222, #080808);
+    border: 1px solid #555;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    transition: .3s;
+}
+
+.social-btn:hover {
+    background: white;
+    color: black;
+    border-color: white;
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px rgba(255,255,255,.25);
+}
+
+/* CREATOR DIVIDER */
+
+.creator {
+    margin-bottom: 35px;
+}
+
+.creator:last-child {
+    margin-bottom: 0;
+}
+
+.creator + .creator {
+    border-top: 1px solid rgba(255,255,255,.12);
+    padding-top: 35px;
+}
+
+.creator-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    margin-bottom: 25px;
+    letter-spacing: 3px;
+}
+
+.creator-name span {
+    color: #aaa;
+}
+
+/* FOOTER */
+
+footer {
+    padding: 40px 20px;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,.1);
+    color: #666;
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+/* SCROLL ANIMATION */
+
+.hidden {
+    opacity: 0;
+    transform: translateY(45px);
+    transition: opacity .8s ease, transform .8s ease;
+}
+
+.hidden.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* SCANLINES */
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    opacity: .035;
+
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        white 4px
+    );
+}
+
+/* MOBILE */
+
+@media(max-width: 600px) {
+    header {
+        min-height: 380px;
+    }
+
+    .logo-title {
+        letter-spacing: 5px;
+    }
+
+    .subtitle {
+        font-size: 10px;
+        letter-spacing: 2px;
+    }
+
+    .achievements-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .join-box {
+        padding: 40px 18px;
+    }
+
+    section {
+        margin-bottom: 75px;
+    }
+
+    .social-btn {
+        width: 100%;
+    }
+}
+
+/* ACCESSIBILITY */
+
+@media(prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+    }
+
+    .hidden {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+</style>
 </head>
+
 <body>
 
-    <header>
-        <div class="logo-title">ECO FAMQ</div>
-        <div class="subtitle">Единство, Честь, Победа. Мы пишем историю.</div>
-    </header>
+<div class="light"></div>
 
-    <div class="container">
+<header>
+    <div class="logo-title">ECO FAMQ</div>
 
-        <!-- ВСТУПЛЕНИЕ В СЕМЬЮ -->
-        <section id="recruitment">
-            <div class="join-box">
-                <h3>Вступить в семью</h3>
-                <p>Хочешь побеждать вместе с лучшими? Подать заявку на вступление можно в нашем Discord-сервере!</p>
-                <!-- Ссылка на ваш Discord -->
-                <a href="https://discord.gg/8NdkeCbK5Z" target="_blank" class="btn-discord">Подать заявку тут</a>
-            </div>
-        </section>
-
-        <!-- НАШИ ДОСТИЖЕНИЯ -->
-        <section id="achievements">
-            <h2>Наши достижения</h2>
-            <div class="achievements-grid">
-                
-                <!-- Достижение 1 (Radmir Cap) -->
-                <div class="achieve-card gold-border">
-                    <div class="achieve-img-container">
-                        <!-- Локальная ссылка на картинку cap.png -->
-                        <img src="1.png" alt="Radmir Cap" class="achieve-img">
-                    </div>
-                    <div class="achieve-info">
-                        <div class="achieve-date">14.03.2026</div>
-                        <div class="achieve-title">ПОБЕДИТЕЛИ RADMIR CAP S1</div>
-                        <div class="achieve-prize">🏆 1 МЕСТО | ПРИЗ 25.000Р</div>
-                    </div>
-                </div>
-
-                <!-- Достижение 2 (Мой Дом) -->
-                <div class="achieve-card purple-border">
-                    <div class="achieve-img-container">
-                        <!-- Локальная ссылка на картинку home.png -->
-                        • <img src="2.png" alt="Турнир Мой Дом" class="achieve-img">
-                    </div>
-                    <div class="achieve-info">
-                        <div class="achieve-date">19.04.2026</div>
-                        <div class="achieve-title">УЧАСТНИКИ ТУРНИРА МОЙ ДОМ</div>
-                        <div class="achieve-prize">🏆 3 МЕСТО | ПРИЗ 10.000Р</div>
-                    </div>
-                </div>
-
-                <!-- Достижение 3 (Гольф Клуб) -->
-                <div class="achieve-card green-border">
-                    <div class="achieve-img-container">
-                        <!-- Локальная ссылка на картинку golf.png -->
-                         <img src="3.png" alt="Война за Гольф Клуб" class="achieve-img">
-                    </div>
-                    <div class="achieve-info">
-                        <div class="achieve-date">02.05.2026</div>
-                        <div class="achieve-title">ПОБЕДИТЕЛИ ТУРНИРА ЗА ГОЛЬФ КЛУБ S1</div>
-                        <div class="achieve-prize">🏆 ПРИЗ 50.000Р</div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- МЕДИА РАЗДЕЛ KERTY66 -->
-        <section id="media">
-            <h2>Медиа & Соцсети</h2>
-            <div class="media-box">
-                <div class="media-username">Следите за контентом от <span>kerty66</span>:</div>
-                <div class="social-links">
-                    <!-- Прямые ссылки на профили kerty66 -->
-                    <a href="https://www.twitch.tv/kerty66" target="_blank" class="social-btn twitch">Twitch</a>
-                    <a href="https://www.youtube.com/@kerty_66" target="_blank" class="social-btn youtube">YouTube</a>
-                    <a href="https://www.tiktok.com/@kerty660" target="_blank" class="social-btn tiktok">TikTok</a>
-                </div>
-            </div>
-        </section>
-
+    <div class="subtitle">
+        Единство. Честь. Победа. Мы пишем историю.
     </div>
 
-    <footer>
-        <p>&copy; 2026 ECO FAMQ. Разработано для игроков Radmir GTA 5 RP.</p>
-    </footer>
+    <div class="header-line"></div>
+</header>
+
+<div class="container">
+
+    <!-- DISCORD -->
+
+    <section id="recruitment" class="hidden">
+
+        <div class="join-box">
+
+            <h3>ВСТУПИТЬ В СЕМЬЮ</h3>
+
+            <p>
+                Хочешь стать частью нашей истории?
+                Присоединяйся к ECO FAMQ и побеждай вместе с нами.
+                Подай заявку в нашем Discord!
+            </p>
+
+            <a
+                href="https://discord.gg/8NdkeCbK5Z"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-discord">
+
+                ПОДАТЬ ЗАЯВКУ
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- ACHIEVEMENTS -->
+
+    <section id="achievements" class="hidden">
+
+        <h2>НАШИ ДОСТИЖЕНИЯ</h2>
+
+        <div class="achievements-grid">
+
+            <!-- 1 -->
+
+            <div class="achieve-card">
+
+                <div class="achieve-img-container">
+
+                    <img
+                        src="1.png"
+                        alt="Radmir Cap"
+                        class="achieve-img">
+
+                </div>
+
+                <div class="achieve-info">
+
+                    <div class="achieve-date">
+                        14.03.2026
+                    </div>
+
+                    <div class="achieve-title">
+                        ПОБЕДИТЕЛИ RADMIR CAP S1
+                    </div>
+
+                    <div class="achieve-prize">
+                        🏆 1 МЕСТО | ПРИЗ 25.000Р
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 2 -->
+
+            <div class="achieve-card">
+
+                <div class="achieve-img-container">
+
+                    <img
+                        src="2.png"
+                        alt="Турнир Мой Дом"
+                        class="achieve-img">
+
+                </div>
+
+                <div class="achieve-info">
+
+                    <div class="achieve-date">
+                        19.04.2026
+                    </div>
+
+                    <div class="achieve-title">
+                        УЧАСТНИКИ ТУРНИРА МОЙ ДОМ
+                    </div>
+
+                    <div class="achieve-prize">
+                        🏆 3 МЕСТО | ПРИЗ 10.000Р
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 3 -->
+
+            <div class="achieve-card">
+
+                <div class="achieve-img-container">
+
+                    <img
+                        src="3.png"
+                        alt="Гольф Клуб"
+                        class="achieve-img">
+
+                </div>
+
+                <div class="achieve-info">
+
+                    <div class="achieve-date">
+                        02.05.2026
+                    </div>
+
+                    <div class="achieve-title">
+                        ПОБЕДИТЕЛИ ТУРНИРА ЗА ГОЛЬФ КЛУБ S1
+                    </div>
+
+                    <div class="achieve-prize">
+                        🏆 ПРИЗ 50.000Р
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MEDIA -->
+
+    <section id="media" class="hidden">
+
+        <h2>МЕДИА И СОЦСЕТИ</h2>
+
+        <div class="media-box">
+
+            <!-- BLOGGER 1 -->
+
+            <div class="creator">
+
+                <div class="creator-name">
+                    <span>MEDIA //</span> KERTY66
+                </div>
+
+                <div class="social-links">
+
+                    <a
+                        href="https://www.twitch.tv/kerty66"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="social-btn">
+
+                        TWITCH
+
+                    </a>
+
+                    <a
+                        href="https://www.youtube.com/@kerty_66"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="social-btn">
+
+                        YOUTUBE
+
+                    </a>
+
+                    <a
+                        href="https://www.tiktok.com/@kerty660"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="social-btn">
+
+                        TIKTOK
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- BLOGGER 2 -->
+
+            <div class="creator">
+
+                <div class="creator-name">
+                    <span>MEDIA //</span> SOHTE13
+                </div>
+
+                <div class="social-links">
+
+                    <a
+                        href="https://www.twitch.tv/sohte13"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="social-btn">
+
+                        TWITCH
+
+                    </a>
+
+                    <a
+                        href="https://t.me/internetsherif333"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="social-btn">
+
+                        TELEGRAM
+
+                    </a>
+
+                    <a
+                        href="https://www.youtube.com/@kuwe1ck"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="social-btn">
+
+                        YOUTUBE
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <p>
+        © 2026 ECO FAMQ
+    </p>
+
+    <p style="margin-top:12px">
+        DEAD INSIDE STYLE | RADMIR GTA 5 RP
+    </p>
+
+</footer>
+
+
+<!-- ANIMATIONS -->
+
+<script>
+
+const observer = new IntersectionObserver((entries) => {
+
+    entries.forEach(entry => {
+
+        if (entry.isIntersecting) {
+
+            entry.target.classList.add('show');
+
+            observer.unobserve(entry.target);
+
+        }
+
+    });
+
+}, {
+    threshold: 0.12
+});
+
+document.querySelectorAll('.hidden').forEach(element => {
+
+    observer.observe(element);
+
+});
+
+</script>
 
 </body>
 </html>
